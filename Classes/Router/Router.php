@@ -46,9 +46,19 @@ class Router
         } else {
             switch ($this->request['resource']) {
                 case 'USERS':
+                    $specific_resource = $this->request['specific_resource'];
+                    if ($specific_resource) {
+                        $this->response =  $this->userService->getOne($specific_resource);
+                        break;
+                    }
                     $this->response = $this->userService->getAll();
                     break;
                 case 'PRODUCTS':
+                    $specific_resource = $this->request['specific_resource'];
+                    if ($specific_resource) {
+                        $this->response =  $this->productService->getOne($specific_resource);
+                        break;
+                    }
                     $this->response = $this->productService->getAll();
                     break;
 

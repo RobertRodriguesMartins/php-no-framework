@@ -33,6 +33,20 @@ class MySql
         return $data;
     }
 
+    public function getOne($table, $id)
+    {
+        $query = "SELECT * FROM " . $table . " WHERE id = :id";
+        $pdoStmt = $this->db->prepare($query);
+        $pdoStmt->bindParam(':id', $id);
+        $success = $pdoStmt->execute();
+
+        if ($success) {
+            $data = $pdoStmt->fetch($this->db::FETCH_ASSOC);
+        }
+
+        return $data ?? 'user does not exists.';
+    }
+
     public function insertOne($query)
     {
         $pdoStmt = $this->db->prepare($query);

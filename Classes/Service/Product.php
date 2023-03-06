@@ -19,6 +19,11 @@ class Product
         return $this->db->getAll('products');
     }
 
+    public function getOne($id)
+    {
+        return $this->db->getOne('products', $id);
+    }
+
     public function create()
     {
         $payload = Util::processPayload(['name', 'quantity', 'price']);
@@ -29,6 +34,10 @@ class Product
 
         $query = "INSERT INTO products (name, quantity, price) VALUES ('$name', '$qt', '$price')";
         $response = $this->db->insertOne($query);
+
+        if (is_array($response)) {
+            http_response_code(201);
+        }
 
         return $response;
     }

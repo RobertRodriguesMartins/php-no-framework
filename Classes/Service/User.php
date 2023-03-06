@@ -19,6 +19,11 @@ class User
         return $this->db->getAll('users');
     }
 
+    public function getOne($id)
+    {
+        return $this->db->getOne('users', $id);
+    }
+
     public function create()
     {
         $payload = Util::processPayload(['login', 'password']);
@@ -31,6 +36,7 @@ class User
 
         if (is_array($response)) {
             $response['token'] = $token;
+            http_response_code(201);
         }
 
         return $response;

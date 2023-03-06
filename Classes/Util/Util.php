@@ -12,7 +12,8 @@ class Util
         foreach ($keys as $key) {
             $exists = array_key_exists($key, $_POST);
             if (!$exists) {
-                throw new Exception('invalid arguments');
+                http_response_code(400);
+                throw new Exception('missing expected arguments.');
             }
             $payload[$key] = $_POST[$key];
         }
