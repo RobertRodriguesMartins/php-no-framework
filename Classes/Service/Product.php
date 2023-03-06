@@ -41,4 +41,34 @@ class Product
 
         return $response;
     }
+
+    public function edit($product)
+    {
+        parse_str(file_get_contents("php://input"), $_PUT);
+
+        foreach ($_PUT as $key => $value) {
+            unset($_PUT[$key]);
+
+            $_PUT[str_replace('amp;', '', $key)] = $value;
+        }
+
+        define('_PUT', $_PUT);
+
+        $payloadKeys = array_keys($_PUT);
+        $payload = Util::processPayload($payloadKeys);
+
+        $name = isset($payload['name']) ?? $product['name'];
+        $qt = isset($payload['quantity']) ?? $product['quantity'];
+        $price = isset($payload['price']) ?? $product['price'];
+        $id = $product['id'];
+
+        $query = "UPDATE products SET name = '$name', quantity = '$qt', price = '$price' WHERE id = $id";
+        $response = $this->db->edit($query);
+
+        if (is_array($response)) {
+            http_response_code(201);
+        }
+
+        return $response;
+    }
 }

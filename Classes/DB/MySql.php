@@ -60,4 +60,18 @@ class MySql
         }
         return 'error';
     }
+
+    public function edit($query)
+    {
+        $pdoStmt = $this->db->prepare($query);
+        $pdoStmt->execute();
+        $updatedRows = $pdoStmt->rowCount();
+
+        if ($updatedRows > 0) {
+            return [
+                'id' => $this->db->lastInsertId(),
+            ];
+        }
+        return 'error';
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Router;
 
+use Exception;
 use Service\Product;
 use Service\User;
 
@@ -43,7 +44,7 @@ class Router
                     $this->response = 'not implemented yet';
                     break;
             }
-        } else {
+        } elseif ($this->request['method'] === 'GET') {
             switch ($this->request['resource']) {
                 case 'USERS':
                     $specific_resource = $this->request['specific_resource'];
@@ -60,6 +61,26 @@ class Router
                         break;
                     }
                     $this->response = $this->productService->getAll();
+                    break;
+
+                default:
+                    $this->response = 'not implemented yet';
+                    break;
+            }
+        } else {
+            switch ($this->request['resource']) {
+                case 'USERS':
+                    $this->response = 'not implemented yet.';
+                    break;
+                case 'PRODUCTS':
+                    $specific_resource = $this->request['specific_resource'];
+                    $product = $this->productService->getOne($specific_resource);
+
+                    if (!isset($product['id'])) {
+                        throw new Exception('invalid product id.');
+                        break;
+                    }
+                    $this->response = $this->productService->edit($product);
                     break;
 
                 default:

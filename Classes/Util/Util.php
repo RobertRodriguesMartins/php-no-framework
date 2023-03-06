@@ -9,13 +9,18 @@ class Util
     public static function processPayload($keys)
     {
         $payload = [];
+        $inputType = '_POST';
+        if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+            $inputType = '_PUT';
+        }
+        echo $$inputType;
         foreach ($keys as $key) {
-            $exists = array_key_exists($key, $_POST);
+            $exists = array_key_exists($key, $$inputType);
             if (!$exists) {
                 http_response_code(400);
                 throw new Exception('missing expected arguments.');
             }
-            $payload[$key] = $_POST[$key];
+            $payload[$key] = $$inputType[$key];
         }
 
         return $payload;
