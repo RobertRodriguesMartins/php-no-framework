@@ -2,13 +2,12 @@
 
 require 'bootstrap.php';
 
-use Util\Util;
-use Service\User;
-use DB\MySql;
+use Router\Router;
 
-var_dump($_SERVER);
-echo new Util();
+$appRouter = new Router();
 
-$userService = new User(new MySql());
+$appRouter->processUrl();
 
-var_dump($userService->all());
+$response = $appRouter->processRequest();
+
+echo $response;

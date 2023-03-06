@@ -26,9 +26,8 @@ class MySql
 
     public function getAll($table)
     {
-        $query = 'SELECT * FROM :tb';
-        $pdoStmt = $this->db->prepare($query);
-        $pdoStmt->bindParam(':tb', $table);
+        $query = "SELECT * FROM " . $table;
+        $pdoStmt = $this->db->query($query);
         $data = $pdoStmt->fetchAll($this->db::FETCH_ASSOC);
 
         return $data;

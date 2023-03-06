@@ -8,12 +8,12 @@ class User
 {
     private MySql $db;
 
-    public function __construct($db)
+    public function __construct()
     {
-        $this->db = $db;
+        $this->db = new MySql();
     }
 
-    public function all()
+    public function getAll()
     {
         return $this->db->getAll('users');
     }
