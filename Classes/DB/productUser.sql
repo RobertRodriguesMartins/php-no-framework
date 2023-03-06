@@ -1,7 +1,8 @@
 CREATE TABLE productUser (
-    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     `userId` INT NOT NULL,
     `productId` INT NOT NULL,
+    `quantity` INT NOT NULL,
     FOREIGN KEY (userId) REFERENCES users(id),
-    FOREIGN KEY (productId) REFERENCES products(id)
+    FOREIGN KEY (productId) REFERENCES products(id),
+    PRIMARY KEY (userId, productId)
 );

@@ -32,4 +32,18 @@ class MySql
 
         return $data;
     }
+
+    public function insertOne($query)
+    {
+        $pdoStmt = $this->db->prepare($query);
+        $pdoStmt->execute();
+        $updatedRows = $pdoStmt->rowCount();
+
+        if ($updatedRows > 0) {
+            return [
+                'id' => $this->db->lastInsertId(),
+            ];
+        }
+        return 'error';
+    }
 }

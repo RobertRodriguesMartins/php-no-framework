@@ -2,6 +2,7 @@
 
 namespace Router;
 
+use Service\Product;
 use Service\User;
 
 class Router
@@ -11,37 +12,52 @@ class Router
     private $response;
 
     private User $userService;
+    private Product $productService;
 
     public function __construct()
     {
         $this->userService = new User();
+        $this->productService = new Product();
     }
 
     public function processUrl()
     {
-        $requestUrl = explode(DS, $_SERVER['REQUEST_URI']);
-        $this->request['resource'] = strtoupper($requestUrl[1]) ?? null;
-        $this->request['specific_resource'] = strtoupper($requestUrl[2]) ?? null;
+        $requestUrl = array_values(explode(DS, $_SERVER['REQUEST_URI']));
+        $this->request['resource'] = isset($requestUrl[1]) ? strtoupper($requestUrl[1]) : null;
+        $this->request['specific_resource'] = isset($requestUrl[2]) ? strtoupper($requestUrl[2]) : null;
         $this->request['method'] = $_SERVER["REQUEST_METHOD"];
     }
 
     public function processRequest()
     {
         if ($this->request['method'] === 'POST') {
-            return 'not implemented yet';
+            switch ($this->request['resource']) {
+                case 'USERS':
+                    $this->response = $this->userService->create();
+                    break;
+                case 'PRODUCTS':
+                    $this->response = $this->productService->create();
+                    break;
+
+                default:
+                    $this->response = 'not implemented yet';
+                    break;
+            }
+        } else {
+            switch ($this->request['resource']) {
+                case 'USERS':
+                    $this->response = $this->userService->getAll();
+                    break;
+                case 'PRODUCTS':
+                    $this->response = $this->productService->getAll();
+                    break;
+
+                default:
+                    $this->response = 'not implemented yet';
+                    break;
+            }
         }
 
-        var_dump($this->request);
-
-        switch ($this->request['resource']) {
-            case 'USERS':
-                $this->response = $this->userService->getAll();
-                break;
-
-            default:
-                $this->response = 'not implemented yet';
-                break;
-        }
 
         return json_encode($this->response);
     }

@@ -8,6 +8,11 @@ $appRouter = new Router();
 
 $appRouter->processUrl();
 
-$response = $appRouter->processRequest();
+try {
+    $response = $appRouter->processRequest();
+} catch (Exception $e) {
+    $response = "error: " . $e->getMessage();
+}
+
 
 echo $response;
