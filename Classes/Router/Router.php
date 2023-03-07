@@ -8,7 +8,6 @@ use Service\User;
 
 class Router
 {
-
     private $request;
     private $response;
 
@@ -31,6 +30,8 @@ class Router
 
     public function processRequest()
     {
+
+        echo $this->request['method'];
         if ($this->request['method'] === 'POST') {
             switch ($this->request['resource']) {
                 case 'USERS':
@@ -63,6 +64,24 @@ class Router
                     $this->response = $this->productService->getAll();
                     break;
 
+                default:
+                    $this->response = 'not implemented yet';
+                    break;
+            }
+        } elseif ($this->request['method'] === 'DELETE') {
+            switch ($this->request['resource']) {
+                case 'USERS':
+                    $this->response = 'not implemented yet.';
+                    break;
+                case 'PRODUCTS':
+                    $specific_resource = $this->request['specific_resource'];
+                    if ($specific_resource) {
+                        $this->response =  $this->productService->remove($specific_resource);
+                        break;
+                    } else {
+                        throw new Exception('id not specified!');
+                        break;
+                    }
                 default:
                     $this->response = 'not implemented yet';
                     break;

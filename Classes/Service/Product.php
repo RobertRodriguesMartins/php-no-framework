@@ -44,6 +44,7 @@ class Product
 
     public function edit($product)
     {
+        $_PUT = [];
         parse_str(file_get_contents("php://input"), $_PUT);
 
         foreach ($_PUT as $key => $value) {
@@ -52,21 +53,28 @@ class Product
             $_PUT[str_replace('amp;', '', $key)] = $value;
         }
 
-        define('_PUT', $_PUT);
+        $payload = Util::processPayload($_PUT);
 
-        $payloadKeys = array_keys($_PUT);
-        $payload = Util::processPayload($payloadKeys);
-
-        $name = isset($payload['name']) ?? $product['name'];
-        $qt = isset($payload['quantity']) ?? $product['quantity'];
-        $price = isset($payload['price']) ?? $product['price'];
+        $name = isset($payload['name']) ? $payload['name'] : $product['name'];
+        $qt = isset($payload['quantity']) ? $payload['quantity'] : $product['quantity'];
+        $price = isset($payload['price']) ? $payload['price'] : $product['price'];
         $id = $product['id'];
 
         $query = "UPDATE products SET name = '$name', quantity = '$qt', price = '$price' WHERE id = $id";
         $response = $this->db->edit($query);
 
         if (is_array($response)) {
-            http_response_code(201);
+            http_response_code(204);
+        }
+
+        return $response;
+    }
+
+    public function remove($id)
+    {
+        $response = $this->db->remove('products', $id);
+        if (is_array($response)) {
+            http_response_code(200);
         }
 
         return $response;

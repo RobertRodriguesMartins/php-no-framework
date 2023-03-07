@@ -9,7 +9,6 @@ class MySql
 {
     private PDO $db;
 
-
     public function __construct()
     {
         $this->db = $this->setDb();
@@ -18,7 +17,7 @@ class MySql
     public function setDb()
     {
         try {
-            return new PDO('mysql:host=' . HOST . ';dbname=' . NAME . ';', USER, PASSWORD);
+            return new PDO('mysql:host=' . HOST . ';dbname=' . NAME . ';', USER, PASSWORD, array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION));
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
@@ -70,6 +69,22 @@ class MySql
         if ($updatedRows > 0) {
             return [
                 'id' => $this->db->lastInsertId(),
+            ];
+        }
+        return 'error';
+    }
+
+    public function remove($table, $id)
+    {
+        $query = "DELETE FROM $table WHERE id = :id";
+        $pdoStmt = $this->db->prepare($query);
+        $pdoStmt->bindParam(':id', $id);
+        $pdoStmt->execute();
+        $count = $pdoStmt->rowCount();
+
+        if ($count > 0) {
+            return [
+                'status' => 'success'
             ];
         }
         return 'error';
