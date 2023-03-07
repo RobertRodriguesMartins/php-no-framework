@@ -35,8 +35,9 @@ class Product
         $query = "INSERT INTO products (name, quantity, price) VALUES ('$name', '$qt', '$price')";
         $response = $this->db->insertOne($query);
 
-        if (is_array($response)) {
+        if ($response['status'] === 'SUCCESS') {
             http_response_code(201);
+            $response['data'] = array_merge($response['data'], $payload);
         }
 
         return $response;
@@ -52,7 +53,6 @@ class Product
 
             $_PUT[str_replace('amp;', '', $key)] = $value;
         }
-
         $payload = Util::processPayload($_PUT);
 
         $name = isset($payload['name']) ? $payload['name'] : $product['name'];
@@ -62,9 +62,9 @@ class Product
 
         $query = "UPDATE products SET name = '$name', quantity = '$qt', price = '$price' WHERE id = $id";
         $response = $this->db->edit($query);
-
-        if (is_array($response)) {
+        if ($response['status'] === 'SUCCESS') {
             http_response_code(204);
+            $response['data'] = array_merge($response['data'], $payload);
         }
 
         return $response;

@@ -11,7 +11,11 @@ $appRouter->processUrl();
 try {
     $response = $appRouter->processRequest();
 } catch (Exception $e) {
-    $response = "error: " . $e->getMessage();
+    $response = [
+        "status" => "FAIL",
+        "data" => [],
+    ];
+    $response = json_encode($response);
 }
 
 

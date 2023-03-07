@@ -31,7 +31,6 @@ class Router
     public function processRequest()
     {
 
-        echo $this->request['method'];
         if ($this->request['method'] === 'POST') {
             switch ($this->request['resource']) {
                 case 'USERS':
@@ -95,11 +94,12 @@ class Router
                     $specific_resource = $this->request['specific_resource'];
                     $product = $this->productService->getOne($specific_resource);
 
-                    if (!isset($product['id'])) {
+                    if ($product['status'] === 'FAIL') {
                         throw new Exception('invalid product id.');
                         break;
                     }
-                    $this->response = $this->productService->edit($product);
+
+                    $this->response = $this->productService->edit($product['data'][0]);
                     break;
 
                 default:

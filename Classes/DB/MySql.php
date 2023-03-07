@@ -5,6 +5,11 @@ namespace DB;
 use PDO;
 use PDOException;
 
+define('RESPONSE', [
+    "status" => "FAIL",
+    "data" => []
+]);
+
 class MySql
 {
     private PDO $db;
@@ -29,7 +34,16 @@ class MySql
         $pdoStmt = $this->db->query($query);
         $data = $pdoStmt->fetchAll($this->db::FETCH_ASSOC);
 
-        return $data;
+        $response = RESPONSE;
+        $dataLength = count($data);
+        if ($dataLength > 0) {
+            $response['status'] = "SUCCESS";
+            $response['data'] = array_merge($response['data'], $data);
+        } elseif ($dataLength === 0) {
+            $response['status'] = "NO_DATA";
+        }
+
+        return $response;
     }
 
     public function getOne($table, $id)
@@ -39,11 +53,18 @@ class MySql
         $pdoStmt->bindParam(':id', $id);
         $success = $pdoStmt->execute();
 
+        $response = RESPONSE;
+        $data = [];
         if ($success) {
             $data = $pdoStmt->fetch($this->db::FETCH_ASSOC);
         }
 
-        return $data ?? 'user does not exists.';
+        if ($data) {
+            $response['status'] = "SUCCESS";
+            $response['data'] = array_merge($response['data'], [$data]);
+        }
+
+        return $response;
     }
 
     public function insertOne($query)
@@ -52,12 +73,14 @@ class MySql
         $pdoStmt->execute();
         $updatedRows = $pdoStmt->rowCount();
 
+        $response = RESPONSE;
+
         if ($updatedRows > 0) {
-            return [
-                'id' => $this->db->lastInsertId(),
-            ];
+            $response['status'] = "SUCCESS";
+            $response['id'] = $this->db->lastInsertId();
         }
-        return 'error';
+
+        return $response;
     }
 
     public function edit($query)
@@ -66,12 +89,14 @@ class MySql
         $pdoStmt->execute();
         $updatedRows = $pdoStmt->rowCount();
 
+        $response = RESPONSE;
+
         if ($updatedRows > 0) {
-            return [
-                'id' => $this->db->lastInsertId(),
-            ];
+            $response['status'] = "SUCCESS";
+            $response['id'] = $this->db->lastInsertId();
         }
-        return 'error';
+
+        return $response;
     }
 
     public function remove($table, $id)
