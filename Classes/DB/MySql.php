@@ -17,6 +17,8 @@ class MySql
     public function __construct()
     {
         $this->db = $this->setDb();
+        $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $this->db->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
     }
 
     public function setDb()
@@ -107,11 +109,11 @@ class MySql
         $pdoStmt->execute();
         $count = $pdoStmt->rowCount();
 
+        $response = RESPONSE;
+
         if ($count > 0) {
-            return [
-                'status' => 'success'
-            ];
+            $response['status'] = "SUCCESS";
         }
-        return 'error';
+        return $response;
     }
 }

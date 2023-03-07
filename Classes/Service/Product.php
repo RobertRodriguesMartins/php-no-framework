@@ -63,8 +63,9 @@ class Product
         $query = "UPDATE products SET name = '$name', quantity = '$qt', price = '$price' WHERE id = $id";
         $response = $this->db->edit($query);
         if ($response['status'] === 'SUCCESS') {
-            http_response_code(204);
-            $response['data'] = array_merge($response['data'], $payload);
+            http_response_code(200);
+            $response['data'][0] = array_merge($response['data'], $product, $payload);
+            unset($response['id']);
         }
 
         return $response;
@@ -73,7 +74,7 @@ class Product
     public function remove($id)
     {
         $response = $this->db->remove('products', $id);
-        if (is_array($response)) {
+        if ($response['status'] === 'SUCCESS') {
             http_response_code(200);
         }
 
