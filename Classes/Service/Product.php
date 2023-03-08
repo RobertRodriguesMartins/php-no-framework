@@ -24,6 +24,12 @@ class Product
         return $this->db->getOne('products', $id);
     }
 
+    public function getByName()
+    {
+        $payload = Util::processPayload(['name']);
+        return $this->db->getOne('products', $payload['name'], 'name');
+    }
+
     public function create()
     {
         $payload = Util::processPayload(['name', 'quantity', 'price']);

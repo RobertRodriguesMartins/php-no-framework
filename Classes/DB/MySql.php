@@ -72,6 +72,9 @@ class MySql
             case 'token':
                 $query = "SELECT * FROM " . $table . " WHERE token = :value";
                 break;
+            case 'name':
+                $query = "SELECT * FROM " . $table . " WHERE name = :value";
+                break;
 
             default:
                 $query = "SELECT * FROM " . $table . " WHERE id = :value";
