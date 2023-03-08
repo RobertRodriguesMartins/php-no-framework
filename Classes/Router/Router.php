@@ -51,12 +51,7 @@ class Router
                     $this->response = $requestedUser;
                     break;
                 case 'PRODUCTS':
-                    $checkIfProductAlreadyExists = $this->productService->getByName();
-                    if ($checkIfProductAlreadyExists['status'] === 'FAIL') {
-                        $this->response = $this->productService->create();
-                        break;
-                    }
-                    $this->response = ['status' => 'FAIL', 'data' => []];
+                    $this->response = $this->productService->create();
                     break;
 
                 default:
@@ -117,6 +112,7 @@ class Router
                     break;
                 case 'PRODUCTS':
                     $specific_resource = $this->request['specific_resource'];
+
                     $product = $this->productService->getOne($specific_resource);
 
                     if ($product['status'] === 'FAIL') {

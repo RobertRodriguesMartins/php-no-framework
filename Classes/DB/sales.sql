@@ -1,5 +1,0 @@
-CREATE TABLE sales (
-    `id` INT PRIMARY KEY AUTO_INCREMENT,
-    `userId` INT NOT NULL,
-    FOREIGN KEY (userId) REFERENCES users(id)
-);

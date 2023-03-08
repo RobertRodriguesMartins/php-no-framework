@@ -37,4 +37,18 @@ class Util
         $date = date('Y-m-d');
         return date('Y-m-d', strtotime($date . "+ $days days"));
     }
+
+    public static function processPutPayload()
+    {
+        $_PUT = [];
+        parse_str(file_get_contents("php://input"), $_PUT);
+
+        foreach ($_PUT as $key => $value) {
+            unset($_PUT[$key]);
+
+            $_PUT[str_replace('amp;', '', $key)] = $value;
+        }
+
+        return $_PUT;
+    }
 }

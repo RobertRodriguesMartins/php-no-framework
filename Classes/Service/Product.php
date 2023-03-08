@@ -24,10 +24,9 @@ class Product
         return $this->db->getOne('products', $id);
     }
 
-    public function getByName()
+    public function getByName($name)
     {
-        $payload = Util::processPayload(['name']);
-        return $this->db->getOne('products', $payload['name'], 'name');
+        return $this->db->getOne('products', $name, 'name');
     }
 
     public function create()
@@ -37,6 +36,12 @@ class Product
         $name = $payload['name'];
         $qt = (int)$payload['quantity'];
         $price = (float)$payload['price'];
+
+        $checkIfProductAlreadyExists = $this->getByName($name);
+
+        if ($checkIfProductAlreadyExists['status'] === 'SUCCESS') {
+            return ['status' => 'FAIL', 'data' => []];
+        }
 
         $query = "INSERT INTO products (name, quantity, price) VALUES ('$name', '$qt', '$price')";
         $response = $this->db->insertOne($query);
@@ -55,16 +60,7 @@ class Product
 
     public function edit($product)
     {
-        $_PUT = [];
-        parse_str(file_get_contents("php://input"), $_PUT);
-
-        foreach ($_PUT as $key => $value) {
-            unset($_PUT[$key]);
-
-            $_PUT[str_replace('amp;', '', $key)] = $value;
-        }
-
-        $payload = Util::processPayload($_PUT);
+        $payload = Util::processPutPayload();
 
         $name = isset($payload['name']) ? $payload['name'] : $product['name'];
         $qt = isset($payload['quantity']) ? (int)$payload['quantity'] : $product['quantity'];
@@ -73,6 +69,14 @@ class Product
 
         $query = "UPDATE products SET name = '$name', quantity = '$qt', price = '$price' WHERE id = $id";
         $response = $this->db->edit($query);
+
+        if ($payload['name']) {
+            $checkIfProductNameAlreadyExists = $this->getByName($payload['name']);
+
+            if ($checkIfProductNameAlreadyExists['status'] === 'SUCCESS') {
+                return ['status' => 'FAIL', 'data' => []];
+            }
+        }
 
         if ($response['status'] === 'SUCCESS') {
             http_response_code(200);
