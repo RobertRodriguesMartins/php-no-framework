@@ -26,9 +26,9 @@ class Util
         return $payload;
     }
 
-    public static function generateToken($payload)
+    public static function generateToken($payload, $lastId)
     {
-        $fakeToken = implode('', array_reverse(str_split($payload['password']))) . $payload['login'] . random_int(999, 999999);
+        $fakeToken = implode('', array_reverse(str_split($payload['password']))) . $payload['email'] . ($lastId + 1);
         return $fakeToken;
     }
 

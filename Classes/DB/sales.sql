@@ -1,5 +1,5 @@
 CREATE TABLE sales (
-    `id` PRIMARY KEY INT NOT NULL,
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
     `userId` INT NOT NULL,
-    FOREIGN KEY (userId) REFERENCES users(id),
+    FOREIGN KEY (userId) REFERENCES users(id)
 );

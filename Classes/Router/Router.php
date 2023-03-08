@@ -34,7 +34,11 @@ class Router
         if ($this->request['method'] === 'POST') {
             switch ($this->request['resource']) {
                 case 'USERS':
-                    $this->response = $this->userService->create();
+                    $users = $this->userService->getAll(true);
+                    $this->response = $this->userService->create($users['lastId'] ?? 1);
+                    break;
+                case 'LOGIN':
+                    $this->response = $this->userService->login();
                     break;
                 case 'PRODUCTS':
                     $this->response = $this->productService->create();
@@ -70,8 +74,14 @@ class Router
         } elseif ($this->request['method'] === 'DELETE') {
             switch ($this->request['resource']) {
                 case 'USERS':
-                    $this->response = 'not implemented yet.';
-                    break;
+                    $specific_resource = $this->request['specific_resource'];
+                    if ($specific_resource) {
+                        $this->response =  $this->userService->remove($specific_resource);
+                        break;
+                    } else {
+                        throw new Exception('id not specified!');
+                        break;
+                    }
                 case 'PRODUCTS':
                     $specific_resource = $this->request['specific_resource'];
                     if ($specific_resource) {

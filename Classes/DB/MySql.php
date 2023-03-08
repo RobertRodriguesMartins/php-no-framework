@@ -30,7 +30,7 @@ class MySql
         }
     }
 
-    public function getAll($table)
+    public function getAll($table, $count = null)
     {
         $query = "SELECT * FROM " . $table;
         $pdoStmt = $this->db->query($query);
@@ -41,6 +41,10 @@ class MySql
         if ($dataLength > 0) {
             $response['status'] = "SUCCESS";
             $response['data'] = array_merge($response['data'], $data);
+            if ($count) {
+                $index = count((array)$response['data']) - 1;
+                $response['lastId'] = $response['data'][$index]['id'];
+            }
         } elseif ($dataLength === 0) {
             $response['status'] = "NO_DATA";
         }
@@ -48,15 +52,22 @@ class MySql
         return $response;
     }
 
-    public function getOne($table, $id)
+    public function getOne($table, $id, $token = null)
     {
-        $query = "SELECT * FROM " . $table . " WHERE id = :id";
+        $value = $token ?? $id;
+        $query = "SELECT * FROM " . $table . " WHERE id = :value";
+
+        if ($token) {
+            $query = "SELECT * FROM " . $table . " WHERE token = :value";
+        }
+
         $pdoStmt = $this->db->prepare($query);
-        $pdoStmt->bindParam(':id', $id);
+        $pdoStmt->bindParam(':value', $value);
         $success = $pdoStmt->execute();
 
         $response = RESPONSE;
         $data = [];
+
         if ($success) {
             $data = $pdoStmt->fetch($this->db::FETCH_ASSOC);
         }
@@ -79,7 +90,7 @@ class MySql
 
         if ($updatedRows > 0) {
             $response['status'] = "SUCCESS";
-            $response['id'] = $this->db->lastInsertId();
+            $response['id'] = (int)$this->db->lastInsertId();
         }
 
         return $response;

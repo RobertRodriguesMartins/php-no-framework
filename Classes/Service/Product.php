@@ -29,15 +29,19 @@ class Product
         $payload = Util::processPayload(['name', 'quantity', 'price']);
 
         $name = $payload['name'];
-        $qt = $payload['quantity'];
-        $price = $payload['price'];
+        $qt = (int)$payload['quantity'];
+        $price = (float)$payload['price'];
 
         $query = "INSERT INTO products (name, quantity, price) VALUES ('$name', '$qt', '$price')";
         $response = $this->db->insertOne($query);
 
+        $newPayload['name'] = $payload['name'];
+        $newPayload['quantity'] = (int)$payload['quantity'];
+        $newPayload['price'] = (float)$payload['price'];
+
         if ($response['status'] === 'SUCCESS') {
             http_response_code(201);
-            $response['data'] = array_merge($response['data'], $payload);
+            $response['data'] = [array_merge($response['data'], $newPayload)];
         }
 
         return $response;
@@ -53,17 +57,21 @@ class Product
 
             $_PUT[str_replace('amp;', '', $key)] = $value;
         }
+
         $payload = Util::processPayload($_PUT);
 
         $name = isset($payload['name']) ? $payload['name'] : $product['name'];
-        $qt = isset($payload['quantity']) ? $payload['quantity'] : $product['quantity'];
-        $price = isset($payload['price']) ? $payload['price'] : $product['price'];
+        $qt = isset($payload['quantity']) ? (int)$payload['quantity'] : $product['quantity'];
+        $price = isset($payload['price']) ? (float)$payload['price'] : $product['price'];
         $id = $product['id'];
 
         $query = "UPDATE products SET name = '$name', quantity = '$qt', price = '$price' WHERE id = $id";
         $response = $this->db->edit($query);
+
         if ($response['status'] === 'SUCCESS') {
             http_response_code(200);
+            $payload['quantity'] = $qt;
+            $payload['price'] = $price;
             $response['data'][0] = array_merge($response['data'], $product, $payload);
             unset($response['id']);
         }
@@ -74,6 +82,7 @@ class Product
     public function remove($id)
     {
         $response = $this->db->remove('products', $id);
+
         if ($response['status'] === 'SUCCESS') {
             http_response_code(200);
         }
