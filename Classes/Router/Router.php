@@ -38,7 +38,12 @@ class Router
                     $this->response = $this->userService->create($users['lastId'] ?? 1);
                     break;
                 case 'LOGIN':
-                    $this->response = $this->userService->login();
+                    $requestedUser = $this->userService->getByEmail();
+                    if ($requestedUser['status'] === 'SUCCESS') {
+                        $this->response = $this->userService->login($requestedUser['data'][0]['id']);
+                        break;
+                    }
+                    $this->response = $requestedUser;
                     break;
                 case 'PRODUCTS':
                     $this->response = $this->productService->create();

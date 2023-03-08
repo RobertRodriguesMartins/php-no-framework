@@ -24,16 +24,23 @@ class User
         return $this->db->getOne('users', $id);
     }
 
-    public function login()
+    public function getByEmail()
     {
-        $token = 'not implemented yet';
-        return $this->db->getOne('users', null, $token);
+        $payload = Util::processPayload(['email']);
+        return $this->db->getOne('users', $payload['email'], 'email');
+    }
+
+    public function login($userId)
+    {
+        $payload = Util::processPayload(['email', 'password']);
+        $token = Util::generateToken($payload, $userId);
+        return $this->db->getOne('users', $token, 'token');
     }
 
     public function create($lastId)
     {
         $payload = Util::processPayload(['email', 'password']);
-        $token = Util::generateToken($payload, $lastId);
+        $token = Util::generateToken($payload, $lastId + 1);
         $tkdate = Util::generateExpirationDate();
         $email = $payload['email'];
 

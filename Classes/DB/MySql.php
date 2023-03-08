@@ -52,13 +52,18 @@ class MySql
         return $response;
     }
 
-    public function getOne($table, $id, $token = null)
+    public function getOne($table, $value, $case = 'id')
     {
-        $value = $token ?? $id;
-        $query = "SELECT * FROM " . $table . " WHERE id = :value";
+        switch ($case) {
+            case 'email':
+                $query = "SELECT * FROM " . $table . " WHERE email = :value";
+                break;
+            case 'token':
+                $query = "SELECT * FROM " . $table . " WHERE token = :value";
+                break;
 
-        if ($token) {
-            $query = "SELECT * FROM " . $table . " WHERE token = :value";
+            default:
+                $query = "SELECT * FROM " . $table . " WHERE id = :value";
         }
 
         $pdoStmt = $this->db->prepare($query);
