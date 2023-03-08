@@ -35,7 +35,12 @@ class Router
             switch ($this->request['resource']) {
                 case 'USERS':
                     $users = $this->userService->getAll(true);
-                    $this->response = $this->userService->create($users['lastId'] ?? 1);
+                    $checkIfUserAlreayExists = $this->userService->getByEmail();
+                    if ($checkIfUserAlreayExists['status'] === 'FAIL') {
+                        $this->response = $this->userService->create($users['lastId'] ?? 1);
+                        break;
+                    }
+                    $this->response = ['status' => 'FAIL', 'data' => []];
                     break;
                 case 'LOGIN':
                     $requestedUser = $this->userService->getByEmail();

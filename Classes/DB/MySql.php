@@ -21,6 +21,17 @@ class MySql
         $this->db->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
     }
 
+    public function getNextAutoIncrement()
+    {
+        $query = "SELECT `AUTO_INCREMENT` FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'php_db'
+        AND TABLE_NAME = 'users' ";
+
+        $pdoStmt = $this->db->query($query);
+        $response = $pdoStmt->fetchAll($this->db::FETCH_ASSOC);
+
+        return $response[0]['AUTO_INCREMENT'];
+    }
+
     public function setDb()
     {
         try {
