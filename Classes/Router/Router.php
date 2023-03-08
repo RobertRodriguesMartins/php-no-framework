@@ -119,7 +119,6 @@ class Router
                         throw new Exception('invalid product id.');
                         break;
                     }
-
                     $this->response = $this->productService->edit($product['data'][0]);
                     break;
 

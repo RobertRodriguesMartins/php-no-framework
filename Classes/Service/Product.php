@@ -26,7 +26,7 @@ class Product
 
     public function getByName($name)
     {
-        return $this->db->getOne('products', $name, 'name');
+        return $this->db->getOne('products', (string)$name, 'name');
     }
 
     public function create()
@@ -67,9 +67,6 @@ class Product
         $price = isset($payload['price']) ? (float)$payload['price'] : $product['price'];
         $id = $product['id'];
 
-        $query = "UPDATE products SET name = '$name', quantity = '$qt', price = '$price' WHERE id = $id";
-        $response = $this->db->edit($query);
-
         if ($payload['name']) {
             $checkIfProductNameAlreadyExists = $this->getByName($payload['name']);
 
@@ -77,6 +74,9 @@ class Product
                 return ['status' => 'FAIL', 'data' => []];
             }
         }
+
+        $query = "UPDATE products SET name = '$name', quantity = '$qt', price = '$price' WHERE id = $id";
+        $response = $this->db->edit($query);
 
         if ($response['status'] === 'SUCCESS') {
             http_response_code(200);
