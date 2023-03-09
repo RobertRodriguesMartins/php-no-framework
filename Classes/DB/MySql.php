@@ -57,6 +57,7 @@ class MySql
                 $response['lastId'] = $response['data'][$index]['id'];
             }
         } elseif ($dataLength === 0) {
+            $response['lastId'] = 0;
             $response['status'] = "NO_DATA";
         }
 
