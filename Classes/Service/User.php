@@ -19,9 +19,14 @@ class User
         return $this->db->getAll('users', $count);
     }
 
-    public function getOne($id)
+    public function getOne($value, $case = 'id')
     {
-        return $this->db->getOne('users', $id);
+        return $this->db->getOne('users', $value, $case);
+    }
+
+    public function getUserToken()
+    {
+        return Util::processPayload(['token']);
     }
 
     public function getByEmail()

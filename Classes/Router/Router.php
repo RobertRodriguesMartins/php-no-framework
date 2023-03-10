@@ -30,9 +30,19 @@ class Router
 
     public function processRequest()
     {
-
         if ($this->request['method'] === 'POST') {
+
             switch ($this->request['resource']) {
+                case 'ME':
+                    $providedToken = $this->userService->getUserToken();
+                    $rawResponse = $this->userService->getOne($providedToken['token'], 'token');
+                    if ($rawResponse['status'] === 'SUCCESS') {
+                        $user = $rawResponse['data'][0];
+                        $this->response =  $this->userService->remove($user['id']);
+                        break;
+                    }
+                    $this->response = $rawResponse;
+                    break;
                 case 'USERS':
                     $users = $this->userService->getAll(true);
                     $checkIfUserAlreayExists = $this->userService->getByEmail();
@@ -53,12 +63,12 @@ class Router
                 case 'PRODUCTS':
                     $this->response = $this->productService->create();
                     break;
-
                 default:
                     $this->response = 'not implemented yet';
                     break;
             }
         } elseif ($this->request['method'] === 'GET') {
+
             switch ($this->request['resource']) {
                 case 'USERS':
                     $specific_resource = $this->request['specific_resource'];
@@ -76,22 +86,13 @@ class Router
                     }
                     $this->response = $this->productService->getAll();
                     break;
-
                 default:
                     $this->response = 'not implemented yet';
                     break;
             }
         } elseif ($this->request['method'] === 'DELETE') {
+
             switch ($this->request['resource']) {
-                case 'USERS':
-                    $specific_resource = $this->request['specific_resource'];
-                    if ($specific_resource) {
-                        $this->response =  $this->userService->remove($specific_resource);
-                        break;
-                    } else {
-                        throw new Exception('id not specified!');
-                        break;
-                    }
                 case 'PRODUCTS':
                     $specific_resource = $this->request['specific_resource'];
                     if ($specific_resource) {
@@ -106,6 +107,7 @@ class Router
                     break;
             }
         } else {
+
             switch ($this->request['resource']) {
                 case 'USERS':
                     $this->response = 'not implemented yet.';
@@ -121,14 +123,11 @@ class Router
                     }
                     $this->response = $this->productService->edit($product['data'][0]);
                     break;
-
                 default:
                     $this->response = 'not implemented yet';
                     break;
             }
         }
-
-
         return json_encode($this->response);
     }
 }
