@@ -24,9 +24,11 @@ class User
         return $this->db->getOne('users', $value, $case);
     }
 
-    public function getUserToken()
+    public function getUserToken($method = 'POST')
     {
-        return Util::processPayload(['token']);
+        $payload = $method === 'POST' ? Util::processPayload(['token']) : Util::processPutPayload(['token']);
+        $token = isset($payload['token']) ? $payload : ['token' => ''];
+        return $token;
     }
 
     public function getByEmail()

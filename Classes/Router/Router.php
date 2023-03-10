@@ -64,7 +64,6 @@ class Router
                     $providedToken = $this->userService->getUserToken();
                     $rawResponse = $this->userService->getOne($providedToken['token'], 'token');
                     if ($rawResponse['status'] === 'SUCCESS') {
-                        $user = $rawResponse['data'][0];
                         $this->response = $this->productService->create();
                         break;
                     }
@@ -120,16 +119,25 @@ class Router
                     $this->response = 'not implemented yet.';
                     break;
                 case 'PRODUCTS':
-                    $specific_resource = $this->request['specific_resource'];
+                    $providedToken = $this->userService->getUserToken('PUT');
+                    $rawResponse = $this->userService->getOne($providedToken['token'], 'token');
+                    if ($rawResponse['status'] === 'SUCCESS') {
+                        $specific_resource = $this->request['specific_resource'];
 
-                    $product = $this->productService->getOne($specific_resource);
+                        $product = $this->productService->getOne($specific_resource);
 
-                    if ($product['status'] === 'FAIL') {
-                        throw new Exception('invalid product id.');
+                        if ($product['status'] === 'FAIL') {
+                            throw new Exception('invalid product id.');
+                            break;
+                        }
+
+                        $this->response = $this->productService->edit($product['data'][0]);
+                        unset($this->response['data'][0]['token']);
                         break;
                     }
-                    $this->response = $this->productService->edit($product['data'][0]);
+                    $this->response = $rawResponse;
                     break;
+
                 default:
                     $this->response = 'not implemented yet';
                     break;
