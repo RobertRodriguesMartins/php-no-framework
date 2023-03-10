@@ -44,10 +44,10 @@ class User
         return $this->db->getOne('users', $token, 'token');
     }
 
-    public function create($lastId)
+    public function create()
     {
         $payload = Util::processPayload(['email', 'password']);
-        $token = Util::generateToken($payload, $lastId + 1);
+        $token = Util::generateToken($payload);
         $tkdate = Util::generateExpirationDate();
         $email = $payload['email'];
 

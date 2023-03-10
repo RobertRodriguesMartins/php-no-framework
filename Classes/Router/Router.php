@@ -44,10 +44,9 @@ class Router
                     $this->response = $rawResponse;
                     break;
                 case 'USERS':
-                    $users = $this->userService->getAll(true);
                     $checkIfUserAlreayExists = $this->userService->getByEmail();
                     if ($checkIfUserAlreayExists['status'] === 'FAIL') {
-                        $this->response = $this->userService->create($users['lastId'] ?? 1);
+                        $this->response = $this->userService->create();
                         break;
                     }
                     $this->response = ['status' => 'FAIL', 'data' => []];

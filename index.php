@@ -23,5 +23,4 @@ try {
     $response = json_encode($response);
 }
 
-
 echo $response;

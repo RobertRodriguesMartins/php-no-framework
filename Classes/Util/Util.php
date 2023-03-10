@@ -26,9 +26,9 @@ class Util
         return $payload;
     }
 
-    public static function generateToken($payload, $lastId)
+    public static function generateToken($payload, $lastId = 0)
     {
-        $fakeToken = implode('', array_reverse(str_split($payload['password']))) . $payload['email'] . ($lastId);
+        $fakeToken = sha1((string)$payload['password'] . (string)$payload['email'] . date('YmdHis'));
         return $fakeToken;
     }
 
