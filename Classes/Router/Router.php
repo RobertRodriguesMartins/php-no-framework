@@ -61,7 +61,14 @@ class Router
                     $this->response = $requestedUser;
                     break;
                 case 'PRODUCTS':
-                    $this->response = $this->productService->create();
+                    $providedToken = $this->userService->getUserToken();
+                    $rawResponse = $this->userService->getOne($providedToken['token'], 'token');
+                    if ($rawResponse['status'] === 'SUCCESS') {
+                        $user = $rawResponse['data'][0];
+                        $this->response = $this->productService->create();
+                        break;
+                    }
+                    $this->response = $rawResponse;
                     break;
                 default:
                     $this->response = 'not implemented yet';
