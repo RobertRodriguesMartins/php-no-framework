@@ -19,10 +19,8 @@ class App
     {
         //define um valor padrão para o objeto de response
         $this->response = RESPONSE;
-        //instancia o router
+        //instancia o router e automaticamente prepara o objeto de request
         $this->router = new Router();
-        //prepara o objeto de request
-        $this->router->processUrl();
         //inicia o processo de busca do endpoint
         $this->return = $this->start();
     }

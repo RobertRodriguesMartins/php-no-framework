@@ -5,24 +5,35 @@ namespace Router;
 use Exception;
 use Service\Product;
 use Service\User;
+use Auth\Auth;
+
 
 class Router
 {
+    // o objeto que salva as informações da requisição
     private $request;
+    // o objeto de resposta dos serviçoes invocados
     private $response;
+    // o objeto de retorno do Router
+    private $return;
+    // essa propriedade guarda o Agente que verifica a validade e autenticidade do token
+    private Auth $authMiddleware;
 
     private User $userService;
     private Product $productService;
 
     public function __construct()
     {
+        $this->processUrl();
         $this->userService = new User();
         $this->productService = new Product();
+        $this->authMiddleware = new Auth($this->request['authorization'], $this->userService);
     }
 
     public function processUrl()
     {
         $requestUrl = array_values(explode(DS, $_SERVER['REQUEST_URI']));
+        $this->request['authorization'] = isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : 'not defined';
         $this->request['resource'] = isset($requestUrl[1]) ? strtoupper($requestUrl[1]) : null;
         $this->request['specific_resource'] = isset($requestUrl[2]) ? strtoupper($requestUrl[2]) : null;
         $this->request['method'] = $_SERVER["REQUEST_METHOD"];
@@ -47,9 +58,11 @@ class Router
                         $this->response = $this->userService->login($requestedUser['data'][0]);
                         break;
                     }
+
                     $this->response = $requestedUser;
                     break;
                 case 'PRODUCTS':
+                    $this->authMiddleware->checkUser();
                     $this->response = $this->productService->create();
                     break;
                 default:
