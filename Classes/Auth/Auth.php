@@ -13,8 +13,6 @@ class Auth
     private User $userService;
     //o objeto de resposta do serviço
     private $response;
-    //o objeto de retorno do Auth
-    private $return;
 
     public function __construct($rawtoken, User $userS)
     {
@@ -41,9 +39,6 @@ class Auth
         } else {
             $this->checkTokendate();
         }
-        
-        $this->return = $this->response;
-        return $this->return;
     }
 
     public function checkTokenDate()

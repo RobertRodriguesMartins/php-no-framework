@@ -3,6 +3,7 @@
 namespace DB;
 
 use PDO;
+use Error;
 
 class MySql
 {
@@ -34,7 +35,7 @@ class MySql
 
         if ($data && count($data) > 0) {
             $this->response['status'] = "SUCCESS";
-            $this->response['data'] = array_merge($this->response['data'], $data);
+            $this->response['data'] = $data;
         } else {
             $this->response['status'] = "NO_DATA";
         }
@@ -72,6 +73,8 @@ class MySql
         if (is_array($data) && count($data) > 0) {
             $this->response['status'] = "SUCCESS";
             $this->response['data'] = [$data];
+        } else {
+            throw new Error('invalid user id');
         }
 
         $this->return = $this->response;

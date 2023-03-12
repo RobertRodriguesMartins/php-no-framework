@@ -42,7 +42,7 @@ class Router
     public function processRequest()
     {
         if ($this->request['method'] === 'POST') {
-
+            // as primeiras duas rotas não verificam o token
             switch ($this->request['resource']) {
                 case 'USERS':
                     $checkIfUserAlreayExists = $this->userService->getByEmail();
@@ -69,12 +69,14 @@ class Router
                     throw new Exception('invalid route');
             }
         } elseif ($this->request['method'] === 'GET') {
+            // verificar se o usuário está logado
+            $this->authMiddleware->checkUser();
 
             switch ($this->request['resource']) {
                 case 'USERS':
                     $specific_resource = $this->request['specific_resource'];
                     if ($specific_resource) {
-                        $this->response =  $this->userService->getOne($specific_resource);
+                        $this->response =  $this->userService->getOne((int)$specific_resource, 'id');
                         break;
                     }
                     $this->response = $this->userService->getAll();
@@ -91,6 +93,8 @@ class Router
                     throw new Exception('invalid route');
             }
         } elseif ($this->request['method'] === 'DELETE') {
+            // verificar se o usuário está logado
+            $this->authMiddleware->checkUser();
 
             switch ($this->request['resource']) {
                 case 'PRODUCTS':
@@ -102,11 +106,22 @@ class Router
                         throw new Exception('id not specified!');
                         break;
                     }
+                case 'USERS':
+                    $specific_resource = $this->request['specific_resource'];
+                    if ($specific_resource) {
+                        $this->response =  $this->userService->remove($specific_resource);
+                        break;
+                    } else {
+                        throw new Exception('id not specified!');
+                        break;
+                    }
                 default:
                     throw new Exception('invalid route');
             }
         } else {
-
+            // verificar se o usuário está logado
+            $this->authMiddleware->checkUser();
+            // esse caso verifica o método PUT
             switch ($this->request['resource']) {
                 case 'PRODUCTS':
                     $specific_resource = $this->request['specific_resource'];
@@ -119,7 +134,6 @@ class Router
                     }
 
                     $this->response = $this->productService->edit($product['data'][0]);
-                    unset($this->response['data'][0]['token']);
                     break;
 
                 default:

@@ -19,18 +19,18 @@ class User
         $this->db = new MySql();
     }
 
-    public function getAll($count = null)
+    public function getAll()
     {
-        $this->response = $this->db->getAll('users', $count);
+        $this->response = $this->db->getAll('users');
 
         $this->return = $this->response;
         return $this->return;
     }
 
     public function getOne($value, $case = 'id')
-    {
+    {   
         $this->response = $this->db->getOne('users', $value, $case);
-
+    
         $this->return = $this->response;
         return $this->return;
     }
