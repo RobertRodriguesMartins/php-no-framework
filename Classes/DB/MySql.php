@@ -3,16 +3,15 @@
 namespace DB;
 
 use PDO;
-use PDOException;
-
-define('RESPONSE', [
-    "status" => "FAIL",
-    "data" => []
-]);
 
 class MySql
 {
+    // A instancia do banco de dados utilizando PDO
     private PDO $db;
+    // O objeto response representando a resposta do banco
+    private $response = RESPONSE;
+    // O objeto de retorno do model MySql
+    private array $return;
 
     public function __construct()
     {
@@ -21,47 +20,27 @@ class MySql
         $this->db->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
     }
 
-    public function getNextAutoIncrement()
-    {
-        $query = "SELECT `AUTO_INCREMENT` FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'php_db'
-        AND TABLE_NAME = 'users' ";
-
-        $pdoStmt = $this->db->query($query);
-        $response = $pdoStmt->fetchAll($this->db::FETCH_ASSOC);
-
-        return $response[0]['AUTO_INCREMENT'];
-    }
-
     public function setDb()
     {
-        try {
-            return new PDO('mysql:host=' . HOST . ';dbname=' . NAME . ';', USER, PASSWORD, array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION));
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-        }
+        return new PDO('mysql:host=' . HOST . ';dbname=' . NAME .
+        ';', USER, PASSWORD, array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION));
     }
 
-    public function getAll($table, $count = null)
+    public function getAll($table)
     {
         $query = "SELECT * FROM " . $table;
         $pdoStmt = $this->db->query($query);
         $data = $pdoStmt->fetchAll($this->db::FETCH_ASSOC);
 
-        $response = RESPONSE;
-        $dataLength = count($data);
-        if ($dataLength > 0) {
-            $response['status'] = "SUCCESS";
-            $response['data'] = array_merge($response['data'], $data);
-            if ($count) {
-                $index = count((array)$response['data']) - 1;
-                $response['lastId'] = $response['data'][$index]['id'];
-            }
-        } elseif ($dataLength === 0) {
-            $response['lastId'] = 0;
-            $response['status'] = "NO_DATA";
+        if ($data && count($data) > 0) {
+            $this->response['status'] = "SUCCESS";
+            $this->response['data'] = array_merge($this->response['data'], $data);
+        } else {
+            $this->response['status'] = "NO_DATA";
         }
 
-        return $response;
+        $this->return = $this->response;
+        return $this->return;
     }
 
     public function getOne($table, $value, $case = 'id')
@@ -84,20 +63,19 @@ class MySql
         $pdoStmt = $this->db->prepare($query);
         $pdoStmt->bindParam(':value', $value);
         $success = $pdoStmt->execute();
-
-        $response = RESPONSE;
         $data = [];
 
         if ($success) {
             $data = $pdoStmt->fetch($this->db::FETCH_ASSOC);
         }
 
-        if ($data) {
-            $response['status'] = "SUCCESS";
-            $response['data'] = array_merge($response['data'], [$data]);
+        if (is_array($data) && count($data) > 0) {
+            $this->response['status'] = "SUCCESS";
+            $this->response['data'] = [$data];
         }
 
-        return $response;
+        $this->return = $this->response;
+        return $this->return;
     }
 
     public function insertOne($query)
@@ -106,14 +84,13 @@ class MySql
         $pdoStmt->execute();
         $updatedRows = $pdoStmt->rowCount();
 
-        $response = RESPONSE;
-
         if ($updatedRows > 0) {
-            $response['status'] = "SUCCESS";
-            $response['id'] = (int)$this->db->lastInsertId();
+            $this->response['status'] = "SUCCESS";
+            $this->response['data'] = ['id' => $this->db->lastInsertId()];
         }
 
-        return $response;
+        $this->return = $this->response;
+        return $this->return;
     }
 
     public function edit($query)
@@ -122,14 +99,12 @@ class MySql
         $pdoStmt->execute();
         $updatedRows = $pdoStmt->rowCount();
 
-        $response = RESPONSE;
-
         if ($updatedRows > 0) {
-            $response['status'] = "SUCCESS";
-            $response['id'] = $this->db->lastInsertId();
+            $this->response['status'] = "SUCCESS";
         }
 
-        return $response;
+        $this->return = $this->response;
+        return $this->return;
     }
 
     public function remove($table, $id)
@@ -140,11 +115,11 @@ class MySql
         $pdoStmt->execute();
         $count = $pdoStmt->rowCount();
 
-        $response = RESPONSE;
-
         if ($count > 0) {
-            $response['status'] = "SUCCESS";
+            $this->response['status'] = "SUCCESS";
         }
-        return $response;
+
+        $this->return = $this->response;
+        return $this->return;
     }
 }

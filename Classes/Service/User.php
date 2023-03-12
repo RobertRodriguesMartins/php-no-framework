@@ -7,6 +7,7 @@ use Util\Util;
 
 class User
 {
+    // O serviço User chama o model do banco
     private MySql $db;
 
     public function __construct()
@@ -24,24 +25,23 @@ class User
         return $this->db->getOne('users', $value, $case);
     }
 
-    public function getUserToken($method = 'POST')
-    {
-        $payload = $method === 'POST' ? Util::processPayload(['token']) : Util::processPutPayload(['token']);
-        $token = isset($payload['token']) ? $payload : ['token' => ''];
-        return $token;
-    }
-
     public function getByEmail()
     {
         $payload = Util::processPayload(['email']);
         return $this->db->getOne('users', $payload['email'], 'email');
     }
 
-    public function login($userId)
+    public function login($userData)
     {
         $payload = Util::processPayload(['email', 'password']);
-        $token = Util::generateToken($payload, $userId);
-        return $this->db->getOne('users', $token, 'token');
+        Util::verifyToken($payload, $userData['token']);
+
+        $refreshToken = Util::generateToken($payload);
+        $expire_date = Util::generateExpirationDate();
+        $id = $userData['id'];
+
+        $query = "UPDATE users SET token = '$refreshToken', token_expire_date = '$expire_date' WHERE id = '$id'";
+        return $this->db->edit($query);
     }
 
     public function create()
@@ -55,7 +55,7 @@ class User
         $response = $this->db->insertOne($query);
 
         if ($response['status'] === 'SUCCESS') {
-            $response['token'] = $token;
+            $response['data'] = [array_merge($response['data'], ['email' => $email, 'token' => $token])];
             http_response_code(201);
         }
 

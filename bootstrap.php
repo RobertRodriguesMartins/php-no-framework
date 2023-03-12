@@ -11,6 +11,15 @@ define('PASSWORD', 'password');
 define('DIR_APP', '/var/www/html');
 define('DS', '/');
 
+// constante padrão para a resposta em caso de erro
+define('RESPONSE', [
+    "status" => "FAIL",
+    "data" => []
+]);
+
+//chave privada para a geração do token
+define('PRIVATE_KEY', 'robert123orreadafile');
+
 // autoload das classes 
 if (file_exists('autoload.php')) {
 	include 'autoload.php';

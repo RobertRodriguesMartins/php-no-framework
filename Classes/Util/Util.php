@@ -10,16 +10,20 @@ class Util
     {
         $payload = [];
         $inputType = $_POST;
+
         if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $inputType = $keys;
             $keys = array_keys($keys);
         }
+
         foreach ($keys as $key) {
             $exists = array_key_exists($key, $inputType);
+            
             if (!$exists) {
                 http_response_code(400);
                 throw new Exception('missing expected arguments.');
             }
+            
             $payload[$key] = $inputType[$key];
         }
 
@@ -28,8 +32,16 @@ class Util
 
     public static function generateToken($payload)
     {
-        $fakeToken = sha1((string)$payload['password'] . (string)$payload['email'] . date('YmdHis'));
-        return $fakeToken;
+        $token = password_hash((string)$payload['password'] . (string)$payload['email'] . PRIVATE_KEY, PASSWORD_BCRYPT);
+        return $token;
+    }
+    
+    public static function verifyToken($payload, $dbToken)
+    {
+        $isValidPassword = password_verify((string)$payload['password'] . (string)$payload['email'] . PRIVATE_KEY, $dbToken);
+        if (!$isValidPassword) {
+            throw new Exception('invalid password');
+        }
     }
 
     public static function generateExpirationDate($days = 1)
