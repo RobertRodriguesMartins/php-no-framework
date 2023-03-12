@@ -9,6 +9,10 @@ class User
 {
     // O serviço User chama o model do banco
     private MySql $db;
+    // o objeto de resposta do model
+    private $response = RESPONSE;
+    // o objeto de resposta do serviço user
+    private $return;
 
     public function __construct()
     {
@@ -17,18 +21,27 @@ class User
 
     public function getAll($count = null)
     {
-        return $this->db->getAll('users', $count);
+        $this->response = $this->db->getAll('users', $count);
+
+        $this->return = $this->response;
+        return $this->return;
     }
 
     public function getOne($value, $case = 'id')
     {
-        return $this->db->getOne('users', $value, $case);
+        $this->response = $this->db->getOne('users', $value, $case);
+
+        $this->return = $this->response;
+        return $this->return;
     }
 
     public function getByEmail()
     {
         $payload = Util::processPayload(['email']);
-        return $this->db->getOne('users', $payload['email'], 'email');
+        $this->response = $this->db->getOne('users', $payload['email'], 'email');
+
+        $this->return = $this->response;
+        return $this->return;
     }
 
     public function login($userData)
@@ -41,7 +54,16 @@ class User
         $id = $userData['id'];
 
         $query = "UPDATE users SET token = '$refreshToken', token_expire_date = '$expire_date' WHERE id = '$id'";
-        return $this->db->edit($query);
+        
+        $this->response = $this->db->edit($query);
+
+        if ($this->response['status'] === 'SUCCESS') {
+            $this->response['data'] = [array_merge($userData, ['token' => $refreshToken])];
+            unset($this->response['token_expire_date']);
+        }
+
+        $this->return = $this->response;
+        return $this->return;
     }
 
     public function create()
@@ -52,24 +74,26 @@ class User
         $email = $payload['email'];
 
         $query = "INSERT INTO users (email, token, token_expire_date) VALUES ('$email', '$token', '$tkdate')";
-        $response = $this->db->insertOne($query);
+        $this->response = $this->db->insertOne($query);
 
-        if ($response['status'] === 'SUCCESS') {
-            $response['data'] = [array_merge($response['data'], ['email' => $email, 'token' => $token])];
+        if ($this->response['status'] === 'SUCCESS') {
+            $this->response['data'] = [array_merge($this->response['data'], ['email' => $email, 'token' => $token])];
             http_response_code(201);
         }
 
-        return $response;
+        $this->return = $this->response;
+        return $this->return;
     }
 
     public function remove($id)
     {
-        $response = $this->db->remove('users', $id);
+        $this->response = $this->db->remove('users', $id);
 
-        if ($response['status'] === 'SUCCESS') {
+        if ($this->response['status'] === 'SUCCESS') {
             http_response_code(200);
         }
 
-        return $response;
+        $this->return = $this->response;
+        return $this->return;
     }
 }

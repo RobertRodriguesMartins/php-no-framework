@@ -86,7 +86,7 @@ class MySql
 
         if ($updatedRows > 0) {
             $this->response['status'] = "SUCCESS";
-            $this->response['data'] = ['id' => $this->db->lastInsertId()];
+            $this->response['data'] = ['id' => (int)$this->db->lastInsertId()];
         }
 
         $this->return = $this->response;

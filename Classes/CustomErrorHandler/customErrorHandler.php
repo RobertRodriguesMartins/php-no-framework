@@ -1,7 +1,7 @@
 <?php 
 
-function customErrorHandler($errstr) {
-    echo "o erro foi: $errstr";
+function customErrorHandler($errnum = 'numero', $errstr = 'erro desconhecido', $errfile = 'arquivo?', $errline = 'linha') {
+    echo "o erro $errstr: foi encontrado em $errfile na linha $errline. codigo: $errnum";
 
     echo json_encode(RESPONSE);
 }

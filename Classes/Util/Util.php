@@ -23,7 +23,7 @@ class Util
                 http_response_code(400);
                 throw new Exception('missing expected arguments.');
             }
-            
+
             $payload[$key] = $inputType[$key];
         }
 

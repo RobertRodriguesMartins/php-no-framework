@@ -44,7 +44,7 @@ class Router
                 case 'LOGIN':
                     $requestedUser = $this->userService->getByEmail();
                     if ($requestedUser['status'] === 'SUCCESS') {
-                        $this->response = $this->userService->login($requestedUser['data']);
+                        $this->response = $this->userService->login($requestedUser['data'][0]);
                         break;
                     }
                     $this->response = $requestedUser;
