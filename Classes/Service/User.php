@@ -4,6 +4,7 @@ namespace Service;
 
 use DB\MySql;
 use Util\Util;
+use Error;
 
 class User
 {
@@ -30,7 +31,7 @@ class User
     public function getOne($value, $case = 'id')
     {   
         $this->response = $this->db->getOne('users', $value, $case);
-    
+
         $this->return = $this->response;
         return $this->return;
     }
@@ -60,6 +61,8 @@ class User
         if ($this->response['status'] === 'SUCCESS') {
             $this->response['data'] = [array_merge($userData, ['token' => $refreshToken])];
             unset($this->response['token_expire_date']);
+        } else {
+            throw new Error("error while trying to update token in user table");
         }
 
         $this->return = $this->response;

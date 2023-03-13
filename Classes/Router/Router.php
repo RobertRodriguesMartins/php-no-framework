@@ -27,7 +27,7 @@ class Router
         $this->processUrl();
         $this->userService = new User();
         $this->productService = new Product();
-        $this->authMiddleware = new Auth($this->request['authorization'], $this->userService);
+        $this->authMiddleware = new Auth($this->request['authorization'], new User());
     }
 
     public function processUrl()

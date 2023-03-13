@@ -24,10 +24,7 @@ class Auth
     {
         $splitedTokenArray = explode('Bearer ', trim($rawtoken));
         
-        if (!isset($splitedTokenArray[1])) {
-            throw new Error('invalid token format, make sure you put a Bearer token.');
-        }
-        $this->authorization = $splitedTokenArray[1];
+        $this->authorization = isset($splitedTokenArray[1]) ? $splitedTokenArray[1] : 'not defined';
     }
 
     public function checkUser()

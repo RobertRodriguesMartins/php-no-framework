@@ -73,8 +73,6 @@ class MySql
         if (is_array($data) && count($data) > 0) {
             $this->response['status'] = "SUCCESS";
             $this->response['data'] = [$data];
-        } else {
-            throw new Error('invalid user id');
         }
 
         $this->return = $this->response;
