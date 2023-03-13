@@ -24,7 +24,13 @@ class MySql
     public function setDb()
     {
         return new PDO('mysql:host=' . HOST . ';dbname=' . NAME .
-        ';', USER, PASSWORD, array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION));
+            ';', USER, PASSWORD, array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION));
+    }
+
+    public function clean()
+    {
+        //limpa objeto de response
+        $this->response = RESPONSE;
     }
 
     public function getAll($table)
@@ -41,6 +47,7 @@ class MySql
         }
 
         $this->return = $this->response;
+        $this->clean();
         return $this->return;
     }
 
@@ -76,6 +83,7 @@ class MySql
         }
 
         $this->return = $this->response;
+        $this->clean();
         return $this->return;
     }
 
@@ -91,6 +99,7 @@ class MySql
         }
 
         $this->return = $this->response;
+        $this->clean();
         return $this->return;
     }
 
@@ -105,14 +114,23 @@ class MySql
         }
 
         $this->return = $this->response;
+        $this->clean();
         return $this->return;
     }
 
-    public function remove($table, $id)
+    public function remove($table, $value, $case = 'id')
     {
-        $query = "DELETE FROM $table WHERE id = :id";
+        switch ($case) {
+            case 'token':
+                $query = "DELETE FROM $table WHERE token = :value";
+                break;
+            default:
+                $query = "DELETE FROM $table WHERE id = :value";
+                break;
+        }
+
         $pdoStmt = $this->db->prepare($query);
-        $pdoStmt->bindParam(':id', $id);
+        $pdoStmt->bindParam(':value', $value);
         $pdoStmt->execute();
         $count = $pdoStmt->rowCount();
 
@@ -121,6 +139,7 @@ class MySql
         }
 
         $this->return = $this->response;
+        $this->clean();
         return $this->return;
     }
 }

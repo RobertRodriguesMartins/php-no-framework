@@ -7,26 +7,49 @@ use Util\Util;
 
 class Product
 {
+    //conexão com o banco
     private MySql $db;
+    // o objeto de resposta do model
+    private $response = RESPONSE;
+    // o objeto de resposta do serviço user
+    private $return;
 
     public function __construct()
     {
         $this->db = new MySql();
     }
 
+    public function clean()
+    {
+        //limpa objeto de response
+        $this->response = RESPONSE;
+    }
+
     public function getAll()
     {
-        return $this->db->getAll('products');
+        $this->response = $this->db->getAll('products');
+
+        $this->return = $this->response;
+        $this->clean();
+        return $this->return;
     }
 
     public function getOne($id)
     {
-        return $this->db->getOne('products', $id);
+        $this->response = $this->db->getOne('products', $id);
+
+        $this->return = $this->response;
+        $this->clean();
+        return $this->return;
     }
 
     public function getByName($name)
     {
-        return $this->db->getOne('products', (string)$name, 'name');
+        $this->response = $this->db->getOne('products', (string)$name, 'name');
+
+        $this->return = $this->response;
+        $this->clean();
+        return $this->return;
     }
 
     public function create()
@@ -44,18 +67,20 @@ class Product
         }
 
         $query = "INSERT INTO products (name, quantity, price) VALUES ('$name', '$qt', '$price')";
-        $response = $this->db->insertOne($query);
+        $this->response = $this->db->insertOne($query);
 
         $newPayload['name'] = $payload['name'];
         $newPayload['quantity'] = (int)$payload['quantity'];
         $newPayload['price'] = (float)$payload['price'];
 
-        if ($response['status'] === 'SUCCESS') {
+        if ($this->response['status'] === 'SUCCESS') {
             http_response_code(201);
-            $response['data'] = [array_merge($response['data'], $newPayload)];
+            $this->response['data'] = [array_merge($this->response['data'], $newPayload)];
         }
 
-        return $response;
+        $this->return = $this->response;
+        $this->clean();
+        return $this->return;
     }
 
     public function edit($product)
@@ -67,36 +92,38 @@ class Product
         $price = isset($payload['price']) ? (float)$payload['price'] : $product['price'];
         $id = $product['id'];
 
-        if ($payload['name']) {
+        if (isset($payload['name'])) {
             $checkIfProductNameAlreadyExists = $this->getByName($payload['name']);
-
             if ($checkIfProductNameAlreadyExists['status'] === 'SUCCESS') {
                 return ['status' => 'FAIL', 'data' => []];
             }
         }
 
         $query = "UPDATE products SET name = '$name', quantity = '$qt', price = '$price' WHERE id = $id";
-        $response = $this->db->edit($query);
+        $this->response = $this->db->edit($query);
 
-        if ($response['status'] === 'SUCCESS') {
+        if ($this->response['status'] === 'SUCCESS') {
             http_response_code(200);
             $payload['quantity'] = $qt;
             $payload['price'] = $price;
-            $response['data'][0] = array_merge($response['data'], $product, $payload);
-            unset($response['id']);
+            $this->response['data'][0] = array_merge($this->response['data'], $product, $payload);
         }
 
-        return $response;
+        $this->return = $this->response;
+        $this->clean();
+        return $this->return;
     }
 
     public function remove($id)
     {
-        $response = $this->db->remove('products', $id);
+        $this->response = $this->db->remove('products', $id);
 
-        if ($response['status'] === 'SUCCESS') {
+        if ($this->response['status'] === 'SUCCESS') {
             http_response_code(200);
         }
 
-        return $response;
+        $this->return = $this->response;
+        $this->clean();
+        return $this->return;
     }
 }

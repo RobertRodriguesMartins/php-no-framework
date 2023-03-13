@@ -1,5 +1,7 @@
 <?php
 
+require './Classes/ErrorHandler/ErrorHandler.php';
+
 // Conexão com o banco
 define('HOST', '127.0.0.1');
 define('NAME', 'php_db');
@@ -22,7 +24,7 @@ define('PRIVATE_KEY', 'robert123orreadafile');
 
 // autoload das classes 
 if (file_exists('autoload.php')) {
-	include 'autoload.php';
+    include 'autoload.php';
 } else {
-	die('Falha ao carregar autoload!');
+    die('Falha ao carregar autoload!');
 }

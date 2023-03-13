@@ -20,19 +20,27 @@ class User
         $this->db = new MySql();
     }
 
+    public function clean()
+    {
+        //limpa objeto de response
+        $this->response = RESPONSE;
+    }
+
     public function getAll()
     {
         $this->response = $this->db->getAll('users');
 
         $this->return = $this->response;
+        $this->clean();
         return $this->return;
     }
 
     public function getOne($value, $case = 'id')
-    {   
+    {
         $this->response = $this->db->getOne('users', $value, $case);
 
         $this->return = $this->response;
+        $this->clean();
         return $this->return;
     }
 
@@ -42,6 +50,7 @@ class User
         $this->response = $this->db->getOne('users', $payload['email'], 'email');
 
         $this->return = $this->response;
+        $this->clean();
         return $this->return;
     }
 
@@ -55,7 +64,7 @@ class User
         $id = $userData['id'];
 
         $query = "UPDATE users SET token = '$refreshToken', token_expire_date = '$expire_date' WHERE id = '$id'";
-        
+
         $this->response = $this->db->edit($query);
 
         if ($this->response['status'] === 'SUCCESS') {
@@ -66,6 +75,7 @@ class User
         }
 
         $this->return = $this->response;
+        $this->clean();
         return $this->return;
     }
 
@@ -85,18 +95,20 @@ class User
         }
 
         $this->return = $this->response;
+        $this->clean();
         return $this->return;
     }
 
-    public function remove($id)
+    public function remove($value, $case = 'id')
     {
-        $this->response = $this->db->remove('users', $id);
+        $this->response = $this->db->remove('users', $value, $case);
 
         if ($this->response['status'] === 'SUCCESS') {
             http_response_code(200);
         }
 
         $this->return = $this->response;
+        $this->clean();
         return $this->return;
     }
 }

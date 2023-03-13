@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Auth;
 
@@ -13,6 +13,8 @@ class Auth
     private User $userService;
     //o objeto de resposta do serviço
     private $response;
+    // o objeto de retorno to Auth para o router
+    private string $return = '';
 
     public function __construct($rawtoken, User $userS)
     {
@@ -20,10 +22,16 @@ class Auth
         $this->prepareToken($rawtoken);
     }
 
+    public function clean()
+    {
+        //limpa objeto de response
+        $this->response = RESPONSE;
+    }
+
     public function prepareToken($rawtoken)
     {
         $splitedTokenArray = explode('Bearer ', trim($rawtoken));
-        
+
         $this->authorization = isset($splitedTokenArray[1]) ? $splitedTokenArray[1] : 'not defined';
     }
 
@@ -33,9 +41,15 @@ class Auth
         if ($this->response['status'] === 'FAIL') {
             http_response_code(401);
             throw new Error('invalid token');
+            $this->clean();
         } else {
             $this->checkTokendate();
+            $this->clean();
         }
+
+        $this->return = $this->authorization;
+        $this->clean();
+        return $this->return;
     }
 
     public function checkTokenDate()
@@ -46,4 +60,3 @@ class Auth
         }
     }
 }
-

@@ -1,7 +1,6 @@
 <?php
 
 require 'bootstrap.php';
-require './Classes/CustomErrorHandler/customErrorHandler.php';
 // O Router lida com o processo de roteamento da request -> recurso
 use Router\Router;
 
@@ -29,7 +28,6 @@ class App
     {
         $this->response = $this->router->processRequest();
         return json_encode($this->response);
-
     }
 }
 
