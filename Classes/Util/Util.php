@@ -18,7 +18,7 @@ class Util
 
         foreach ($keys as $key) {
             $exists = array_key_exists($key, $inputType);
-            
+
             if (!$exists) {
                 http_response_code(400);
                 throw new Exception('missing expected arguments.');
@@ -32,13 +32,17 @@ class Util
 
     public static function generateToken($payload)
     {
-        $token = password_hash((string)$payload['password'] . (string)$payload['email'] . PRIVATE_KEY, PASSWORD_BCRYPT);
+        $token = password_hash((string)$payload['password'] .
+            (string)$payload['email'] . PRIVATE_KEY, PASSWORD_BCRYPT);
+
         return $token;
     }
-    
+
     public static function verifyToken($payload, $dbToken)
     {
-        $isValidPassword = password_verify((string)$payload['password'] . (string)$payload['email'] . PRIVATE_KEY, $dbToken);
+        $isValidPassword = password_verify((string)$payload['password'] .
+            (string)$payload['email'] . PRIVATE_KEY, $dbToken);
+
         if (!$isValidPassword) {
             throw new Exception('invalid password');
         }
@@ -47,6 +51,7 @@ class Util
     public static function generateExpirationDate($days = 1)
     {
         $date = date('Y-m-d');
+
         return date('Y-m-d', strtotime($date . "+ $days days"));
     }
 
