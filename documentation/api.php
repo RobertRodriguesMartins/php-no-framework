@@ -1,6 +1,6 @@
 <?php
-require './vendor/autoload.php';
-$openapi = \OpenApi\Generator::scan([$_SERVER['DOCUMENT_ROOT'] . 
-    'Classes' . DS . 'Service']);
+require '/var/www/html/vendor/autoload.php';
+$openapi = \OpenApi\Generator::scan(['/var/www/html/Controllers']);
+var_dump($openapi);
 header('Content-Type: application/json');
 echo $openapi->toJson();
