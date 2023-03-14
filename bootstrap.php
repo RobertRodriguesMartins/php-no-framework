@@ -9,8 +9,7 @@ define('PORT', 3306);
 define('USER', 'root');
 define('PASSWORD', 'password');
 
-// raiz do projeto e variável de DS para fazer split na URI
-define('DIR_APP', '/var/www/html');
+// constante DS(separador de diretório) para fazer split na URI
 define('DS', '/');
 
 // constante padrão para a resposta em caso de erro
