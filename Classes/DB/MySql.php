@@ -3,7 +3,6 @@
 namespace DB;
 
 use PDO;
-use Error;
 
 class MySql
 {
