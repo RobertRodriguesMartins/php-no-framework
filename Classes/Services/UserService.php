@@ -2,15 +2,17 @@
 
 namespace Services;
 
-use DB\MySql;
 use Helpers\Jwt;
+use DB\MySql;
 use Interfaces\Abstract\UserBase;
 
-class User extends UserBase
+class UserService extends UserBase
 {
-    public function __construct(MySql $service)
+    private Mysql $db;
+
+    public function __construct(Mysql $service)
     {
-        parent::__construct($service);
+        $this->db = $service;
     }
 
     public function clean()
@@ -22,7 +24,7 @@ class User extends UserBase
     public function getOne(string $value, string $case = 'id'): string | array
     {
 
-        $this->response = $this->service->getOne('users', $value, $case);
+        $this->response = $this->db->getOne('users', $value, $case);
 
         $this->return = $this->response;
         $this->clean();
@@ -38,7 +40,7 @@ class User extends UserBase
 
         $query = "UPDATE users SET token = ?, token_expire_date = ? WHERE id = ?";
 
-        $this->response = $this->service->edit($query, $params);
+        $this->response = $this->db->edit($query, $params);
 
         $this->return = $this->response;
         $this->clean();

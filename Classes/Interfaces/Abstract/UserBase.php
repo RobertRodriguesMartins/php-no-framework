@@ -16,6 +16,6 @@ abstract class UserBase implements UserContract
 
     public function __construct(UserBase | MySql $service)
     {
-        $this->$service = new $service();
+        $this->$service = $service;
     }
 }

@@ -3,20 +3,20 @@
 namespace Auth;
 
 use Error;
-use Services\User;
+use Services\UserService;
 
 class Auth
 {
     //o token do objeto request
     private string $authorization;
     //serviço do usuário para lidar com o banco
-    private User $userService;
+    private UserService $userService;
     //o objeto de resposta do serviço
     private $response;
     // o objeto de retorno to Auth para o router
     private string $return = '';
 
-    public function __construct($rawtoken, User $userS)
+    public function __construct($rawtoken, UserService $userS)
     {
         $this->userService = $userS;
         $this->prepareToken($rawtoken);

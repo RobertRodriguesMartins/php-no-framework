@@ -7,23 +7,28 @@ use PDO;
 class MySql
 {
     // A instancia do banco de dados utilizando PDO
-    private PDO $db;
+    private PDO $conn;
     // O objeto response representando a resposta do banco
     private $response = RESPONSE;
     // O objeto de retorno do model MySql
     private array $return;
 
+    private $pdoOption = [
+        PDO::ATTR_EMULATE_PREPARES   => false, // turn off emulation mode for "real" prepared statements
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, //turn on errors in the form of exceptions
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, //make the default fetch be an associative array
+        PDO::ATTR_STRINGIFY_FETCHES => false
+    ];
+
     public function __construct()
     {
-        $this->db = $this->setDb();
-        $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-        $this->db->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
+        $this->conn = $this->setDb();
     }
 
     public function setDb()
     {
         return new PDO('mysql:host=' . HOST . ';dbname=' . NAME .
-            ';', USER, PASSWORD, array(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION));
+            ';', USER, PASSWORD, $this->pdoOption);
     }
 
     public function clean()
@@ -35,8 +40,8 @@ class MySql
     public function getAll($table)
     {
         $query = "SELECT * FROM " . $table;
-        $pdoStmt = $this->db->query($query);
-        $data = $pdoStmt->fetchAll($this->db::FETCH_ASSOC);
+        $pdoStmt = $this->conn->query($query);
+        $data = $pdoStmt->fetchAll($this->conn::FETCH_ASSOC);
 
         if ($data && count($data) > 0) {
             $this->response['status'] = "SUCCESS";
@@ -67,13 +72,12 @@ class MySql
                 $query = "SELECT * FROM " . $table . " WHERE id = :value";
         }
 
-        $pdoStmt = $this->db->prepare($query);
-        $pdoStmt->bindParam(':value', $value);
-        $success = $pdoStmt->execute();
+        $pdoStmt = $this->conn->prepare($query);
+        $success = $pdoStmt->execute([':value' => $value]);
         $data = [];
 
         if ($success) {
-            $data = $pdoStmt->fetch($this->db::FETCH_ASSOC);
+            $data = $pdoStmt->fetch($this->conn::FETCH_ASSOC);
         }
 
         if (is_array($data) && count($data) > 0) {
@@ -88,13 +92,13 @@ class MySql
 
     public function insertOne($query)
     {
-        $pdoStmt = $this->db->prepare($query);
+        $pdoStmt = $this->conn->prepare($query);
         $pdoStmt->execute();
         $updatedRows = $pdoStmt->rowCount();
 
         if ($updatedRows > 0) {
             $this->response['status'] = "SUCCESS";
-            $this->response['data'] = ['id' => (int)$this->db->lastInsertId()];
+            $this->response['data'] = ['id' => (int)$this->conn->lastInsertId()];
         }
 
         $this->return = $this->response;
@@ -104,7 +108,7 @@ class MySql
 
     public function edit($query, $params)
     {
-        $pdoStmt = $this->db->prepare($query);
+        $pdoStmt = $this->conn->prepare($query);
         $pdoStmt->execute($params);
         $updatedRows = $pdoStmt->rowCount();
 
@@ -128,7 +132,7 @@ class MySql
                 break;
         }
 
-        $pdoStmt = $this->db->prepare($query);
+        $pdoStmt = $this->conn->prepare($query);
         $pdoStmt->bindParam(':value', $value);
         $pdoStmt->execute();
         $count = $pdoStmt->rowCount();

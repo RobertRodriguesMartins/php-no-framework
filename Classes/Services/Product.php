@@ -100,7 +100,7 @@ class Product
         }
 
         $query = "UPDATE products SET name = '$name', quantity = '$qt', price = '$price' WHERE id = $id";
-        $this->response = $this->db->edit($query);
+        $this->response = $this->db->edit($query, []);
 
         if ($this->response['status'] === 'SUCCESS') {
             http_response_code(200);

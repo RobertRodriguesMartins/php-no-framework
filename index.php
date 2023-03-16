@@ -5,7 +5,7 @@ require 'bootstrap.php';
 use Router\Router;
 use Controllers\UserController;
 use DB\MySql;
-use Services\User;
+use Services\UserService;
 
 class App
 {
@@ -22,15 +22,17 @@ class App
         //define um valor padrão para o objeto de response
         $this->response = RESPONSE;
         //instancia o router e automaticamente prepara o objeto de request
-        $userController = new User(new MySql());
-        $this->router = new Router($userController);
+        $userService = new UserService(new MySql());
+        // $userController = new UserController($userService);
+        // $this->router = new Router($userController);
+        $this->response = $userService->getOne('robert.rm1@gmail.com', 'email');
         //inicia o processo de busca do endpoint
         $this->return = $this->start();
     }
 
     public function start()
     {
-        $this->response = $this->router->processRequest();
+        // $this->response = $this->router->processRequest();
         return json_encode($this->response);
     }
 }
