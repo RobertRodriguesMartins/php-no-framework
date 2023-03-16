@@ -34,12 +34,13 @@ CREATE TABLE sellers (
 CREATE TABLE products (
     `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL UNIQUE,
-    `price` FLOAT NOT NULL,
     `status` TINYINT NOT NULL,
     `mark_id` INT NOT NULL,
     `store_id` INT NOT NULL,
+    `category_id` INT NOT NULL,
     FOREIGN KEY (mark_id) REFERENCES marks(id),
-    FOREIGN KEY (store_id) REFERENCES stores(id)
+    FOREIGN KEY (store_id) REFERENCES stores(id),
+    FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
 CREATE TABLE offers (
