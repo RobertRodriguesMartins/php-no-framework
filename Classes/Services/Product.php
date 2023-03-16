@@ -1,9 +1,9 @@
 <?php
 
-namespace Service;
+namespace Services;
 
 use DB\MySql;
-use Util\Util;
+use Helpers\Payload;
 
 class Product
 {
@@ -54,7 +54,7 @@ class Product
 
     public function create()
     {
-        $payload = Util::processPayload(['name', 'quantity', 'price']);
+        $payload = Payload::processPost(['name', 'quantity', 'price']);
 
         $name = $payload['name'];
         $qt = (int)$payload['quantity'];
@@ -85,7 +85,7 @@ class Product
 
     public function edit($product)
     {
-        $payload = Util::processPutPayload();
+        $payload = Payload::processPut();
 
         $name = isset($payload['name']) ? $payload['name'] : $product['name'];
         $qt = isset($payload['quantity']) ? (int)$payload['quantity'] : $product['quantity'];

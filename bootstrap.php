@@ -10,7 +10,7 @@ define('USER', 'root');
 define('PASSWORD', 'password');
 
 // raiz do projeto e variável de DS para fazer split na URI
-define('DIR_APP', '/var/www/html');
+define('DIR_APP', '/var/www/html/api');
 define('DS', '/');
 
 // constante padrão para a resposta em caso de erro

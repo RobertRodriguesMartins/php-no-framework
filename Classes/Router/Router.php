@@ -3,8 +3,8 @@
 namespace Router;
 
 use Exception;
-use Service\Product;
-use Service\User;
+use Services\Product;
+use Interfaces\Abstract\UserBase;
 use Auth\Auth;
 
 
@@ -18,16 +18,16 @@ class Router
     private $return;
     // essa propriedade guarda o Agente que verifica a validade e autenticidade do token
     private Auth $authMiddleware;
+    // o router ira se encarregar de chamar os controllers
+    private UserBase $userController;
+    private Product $productController;
 
-    private User $userService;
-    private Product $productService;
-
-    public function __construct()
+    public function __construct(UserBase $userController)
     {
         $this->processUrl();
-        $this->userService = new User();
-        $this->productService = new Product();
-        $this->authMiddleware = new Auth($this->request['authorization'], $this->userService);
+        $this->userController = $userController;
+        $this->productController = new Product();
+        $this->authMiddleware = new Auth($this->request['authorization'], $this->userController);
     }
 
     public function processUrl()
@@ -51,27 +51,21 @@ class Router
             // as primeiras duas rotas não verificam o token
             switch ($this->request['resource']) {
                 case 'USERS':
-                    $checkIfUserAlreayExists = $this->userService->getByEmail();
-                    if ($checkIfUserAlreayExists['status'] === 'FAIL') {
-                        $this->response = $this->userService->create();
-                        break;
-                    }
+                    // $checkIfUserAlreayExists = $this->userController->getByEmail();
+                    // if ($checkIfUserAlreayExists['status'] === 'FAIL') {
+                    //     $this->response = $this->userController->create();
+                    //     break;
+                    // }
 
                     http_response_code(400);
                     break;
                 case 'LOGIN':
-                    $requestedUser = $this->userService->getByEmail();
-                    if ($requestedUser['status'] === 'SUCCESS') {
-                        $this->response = $this->userService->login($requestedUser['data'][0]);
-                        break;
-                    }
-
-                    http_response_code(400);
+                    $requestedUser = $this->userController->getOne('token123', 'token');
                     $this->response = $requestedUser;
                     break;
                 case 'PRODUCTS':
                     $this->authMiddleware->checkUser();
-                    $this->response = $this->productService->create();
+                    $this->response = $this->productController->create();
                     break;
                 default:
                     throw new Exception('invalid route');
@@ -84,26 +78,26 @@ class Router
                 case 'USERS':
                     $specific_resource = $this->request['specific_resource'];
                     if ($specific_resource) {
-                        $this->response =  $this->userService->getOne((int)$specific_resource, 'id');
+                        $this->response =  $this->userController->getOne((int)$specific_resource, 'id');
                         if ($this->response['status'] === 'FAIL') {
                             http_response_code(400);
                         }
                         break;
                     }
 
-                    $this->response = $this->userService->getAll();
+                    // $this->response = $this->userController->getAll();
                     break;
                 case 'PRODUCTS':
                     $specific_resource = $this->request['specific_resource'];
                     if ($specific_resource) {
-                        $this->response =  $this->productService->getOne($specific_resource);
+                        $this->response =  $this->productController->getOne($specific_resource);
                         if ($this->response['status'] === 'FAIL') {
                             http_response_code(400);
                         }
                         break;
                     }
 
-                    $this->response = $this->productService->getAll();
+                    $this->response = $this->productController->getAll();
                     break;
                 default:
                     throw new Exception('invalid route');
@@ -116,7 +110,7 @@ class Router
                 case 'PRODUCTS':
                     $specific_resource = $this->request['specific_resource'];
                     if ($specific_resource) {
-                        $this->response =  $this->productService->remove($specific_resource);
+                        $this->response =  $this->productController->remove($specific_resource);
                         if ($this->response['status'] === 'FAIL') {
                             http_response_code(400);
                         }
@@ -128,7 +122,7 @@ class Router
                 case 'USERS':
                     $specific_resource = $this->request['specific_resource'];
                     if ($specific_resource) {
-                        $this->response =  $this->userService->remove($specific_resource);
+                        // $this->response =  $this->userController->remove($specific_resource);
                         if ($this->response['status'] === 'FAIL') {
                             http_response_code(400);
                         }
@@ -139,7 +133,7 @@ class Router
                         break;
                     }
                 case 'ME':
-                    $this->response =  $this->userService->remove($this->request['authorization'], 'token');
+                    // $this->response =  $this->userController->remove($this->request['authorization'], 'token');
                     break;
                 default:
                     throw new Exception('invalid route');
@@ -152,13 +146,13 @@ class Router
                 case 'PRODUCTS':
                     $specific_resource = $this->request['specific_resource'];
 
-                    $product = $this->productService->getOne($specific_resource);
+                    $product = $this->productController->getOne($specific_resource);
                     if ($product['status'] === 'FAIL') {
                         throw new Exception('invalid product id.');
                         break;
                     }
 
-                    $this->response = $this->productService->edit($product['data'][0]);
+                    $this->response = $this->productController->edit($product['data'][0]);
                     if ($this->response['status'] === 'FAIL') {
                         http_response_code(400);
                     }

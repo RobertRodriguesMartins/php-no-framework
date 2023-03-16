@@ -3,7 +3,7 @@
 namespace Auth;
 
 use Error;
-use Service\User;
+use Services\User;
 
 class Auth
 {

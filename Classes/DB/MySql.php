@@ -102,10 +102,10 @@ class MySql
         return $this->return;
     }
 
-    public function edit($query)
+    public function edit($query, $params)
     {
         $pdoStmt = $this->db->prepare($query);
-        $pdoStmt->execute();
+        $pdoStmt->execute($params);
         $updatedRows = $pdoStmt->rowCount();
 
         if ($updatedRows > 0) {

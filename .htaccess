@@ -5,5 +5,5 @@ RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteBase /
+RewriteBase /api
 RewriteRule (.*) index.php?$1 [NC,L]
