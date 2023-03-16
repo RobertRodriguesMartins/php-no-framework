@@ -19,9 +19,9 @@ class App
     {
         //define um valor padrão para o objeto de response
         $this->response = RESPONSE;
-        //instancia o router e automaticamente prepara o objeto de request
+        //inicializa os serviços de user
         $userController = Init::constructUser();
-
+        //instancia o router e automaticamente prepara o objeto de request
         $this->router = new Router($userController);
         $this->return = $this->start();
     }

@@ -18,4 +18,14 @@ abstract class UserBase implements UserContract
     {
         $this->$service = $service;
     }
+
+    public function getOne(string $value, string $case = 'id'): array|string
+    {
+        return [];
+    }
+
+    public function get(): array|string
+    {
+        return [];
+    }
 }

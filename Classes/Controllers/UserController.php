@@ -12,8 +12,10 @@ class UserController extends UserBase
         $this->service = $servico;
     }
 
-    public function getOne(string $value, string $case = 'id'): string | array
+    public function get(): string | array
     {
+        $value = 'amdkadm';
+        $case = 'email';
         $this->response = $this->service->getOne($value, $case);
 
         $this->return = $this->response;

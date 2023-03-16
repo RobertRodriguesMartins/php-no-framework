@@ -59,7 +59,9 @@ class Router
                     http_response_code(400);
                     break;
                 case 'LOGIN':
-                    $requestedUser = $this->userController->getOne('token123', 'token');
+                    $requestedUser = $this->userController->get();
+                    var_dump($requestedUser);
+                    exit();
                     $this->response = $requestedUser;
                     break;
                 case 'PRODUCTS':
