@@ -8,13 +8,13 @@ use Interfaces\UserContract;
 abstract class UserBase implements UserContract
 {
     //algum serviço que implemente User;
-    public UserBase | MySql $service;
+    protected UserBase | MySql $service;
     // objeto de resposta
-    public $response = RESPONSE;
+    protected $response = RESPONSE;
     // o objeto de resposta do serviço user
     public $return;
 
-    public function __construct(UserBase | MySql $service)
+    public function __construct(UserContract | MySql $service)
     {
         $this->$service = $service;
     }

@@ -23,10 +23,9 @@ class App
         $this->response = RESPONSE;
         //instancia o router e automaticamente prepara o objeto de request
         $userService = new UserService(new MySql());
-        // $userController = new UserController($userService);
-        // $this->router = new Router($userController);
-        $this->response = $userService->getOne('robert.rm1@gmail.com', 'email');
-        //inicia o processo de busca do endpoint
+        $userController = new UserController($userService);
+
+        $this->router = new Router($userController);
         $this->return = $this->start();
     }
 

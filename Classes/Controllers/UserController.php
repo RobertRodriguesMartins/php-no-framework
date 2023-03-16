@@ -2,13 +2,14 @@
 
 namespace Controllers;
 
-use \Interfaces\Abstract\UserBase;
+use Interfaces\Abstract\UserBase;
+use Interfaces\UserContract;
 
 class UserController extends UserBase
 {
-    public function __construct(UserBase $userService)
+    public function __construct(UserContract $servico)
     {
-        parent::__construct($userService);
+        $this->service = $servico;
     }
 
     public function getOne(string $value, string $case = 'id'): string | array

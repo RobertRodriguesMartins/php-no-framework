@@ -59,21 +59,21 @@ class MySql
     {
         switch ($case) {
             case 'email':
-                $query = "SELECT * FROM " . $table . " WHERE email = :value";
+                $query = "SELECT * FROM " . $table . " WHERE email = ?";
                 break;
             case 'token':
-                $query = "SELECT * FROM " . $table . " WHERE token = :value";
+                $query = "SELECT * FROM " . $table . " WHERE token = ?";
                 break;
             case 'name':
-                $query = "SELECT * FROM " . $table . " WHERE name = :value";
+                $query = "SELECT * FROM " . $table . " WHERE name = ?";
                 break;
 
             default:
-                $query = "SELECT * FROM " . $table . " WHERE id = :value";
+                $query = "SELECT * FROM " . $table . " WHERE id = ?";
         }
 
         $pdoStmt = $this->conn->prepare($query);
-        $success = $pdoStmt->execute([':value' => $value]);
+        $success = $pdoStmt->execute([$value]);
         $data = [];
 
         if ($success) {

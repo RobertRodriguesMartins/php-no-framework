@@ -3,22 +3,22 @@
 namespace Auth;
 
 use Error;
-use Services\UserService;
+use Interfaces\UserContract;
 
 class Auth
 {
     //o token do objeto request
     private string $authorization;
     //serviço do usuário para lidar com o banco
-    private UserService $userService;
+    private UserContract $userController;
     //o objeto de resposta do serviço
     private $response;
     // o objeto de retorno to Auth para o router
     private string $return = '';
 
-    public function __construct($rawtoken, UserService $userS)
+    public function __construct($rawtoken, UserContract $userS)
     {
-        $this->userService = $userS;
+        $this->userController = $userS;
         $this->prepareToken($rawtoken);
     }
 
@@ -37,7 +37,7 @@ class Auth
 
     public function checkUser()
     {
-        $this->response = $this->userService->getOne($this->authorization, 'token');
+        $this->response = $this->userController->getOne($this->authorization, 'token');
         if ($this->response['status'] === 'FAIL') {
             http_response_code(401);
             throw new Error('invalid token');

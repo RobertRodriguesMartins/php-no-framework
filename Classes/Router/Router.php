@@ -4,9 +4,8 @@ namespace Router;
 
 use Exception;
 use Services\Product;
-use Interfaces\Abstract\UserBase;
 use Auth\Auth;
-
+use Interfaces\UserContract;
 
 class Router
 {
@@ -19,10 +18,10 @@ class Router
     // essa propriedade guarda o Agente que verifica a validade e autenticidade do token
     private Auth $authMiddleware;
     // o router ira se encarregar de chamar os controllers
-    private UserBase $userController;
+    private UserContract $userController;
     private Product $productController;
 
-    public function __construct(UserBase $userController)
+    public function __construct(UserContract $userController)
     {
         $this->processUrl();
         $this->userController = $userController;
