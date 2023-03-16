@@ -2,50 +2,50 @@ CREATE DATABASE IF NOT EXISTS price_db;
 
 USE price_db;
 
-CREATE TABLE users (
-    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `email` VARCHAR(255) NOT NULL UNIQUE,
-    `token` VARCHAR(255) NOT NULL,
-    `token_expire_date` DATE NOT NULL 
+CREATE TABLE user (
+    `id_user` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `user_email` VARCHAR(255) NOT NULL UNIQUE,
+    `user_token` VARCHAR(255) NOT NULL,
+    `user_token_expire_date` DATE NOT NULL 
 );
 
-CREATE TABLE marks (
-    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL UNIQUE
+CREATE TABLE mark (
+    `id_mark` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `mark_name` VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE categories (
-    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL UNIQUE
+CREATE TABLE category (
+    `id_category` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `category_name` VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE stores (
-    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(150) NOT NULL UNIQUE
+CREATE TABLE store (
+    `id_store` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `store_name` VARCHAR(150) NOT NULL UNIQUE
 );
 
-CREATE TABLE sellers (
-    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(150) NOT NULL UNIQUE,
+CREATE TABLE seller (
+    `id_seller` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `seller_name` VARCHAR(150) NOT NULL UNIQUE,
     `store_id` INT NOT NULL,
-    FOREIGN KEY (store_id) REFERENCES stores(id)
+    FOREIGN KEY (store_id) REFERENCES store(id_store)
 );
 
-CREATE TABLE products (
-    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL UNIQUE,
-    `status` TINYINT NOT NULL,
+CREATE TABLE product (
+    `id_product` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `product_name` VARCHAR(255) NOT NULL UNIQUE,
+    `product_status` TINYINT NOT NULL,
     `mark_id` INT NOT NULL,
     `store_id` INT NOT NULL,
     `category_id` INT NOT NULL,
-    FOREIGN KEY (mark_id) REFERENCES marks(id),
-    FOREIGN KEY (store_id) REFERENCES stores(id),
-    FOREIGN KEY (category_id) REFERENCES categories(id)
+    FOREIGN KEY (mark_id) REFERENCES mark(id_mark),
+    FOREIGN KEY (store_id) REFERENCES store(id_store),
+    FOREIGN KEY (category_id) REFERENCES category(id_category)
 );
 
-CREATE TABLE offers (
-    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `price` FLOAT NOT NULL,
+CREATE TABLE offer (
+    `id_offer` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `offer_price` FLOAT NOT NULL,
     `product_id` INT NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES products(id)
+    FOREIGN KEY (product_id) REFERENCES product(id_product)
 );

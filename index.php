@@ -28,7 +28,7 @@ class App
 
     public function start()
     {
-        // $this->response = $this->router->processRequest();
+        $this->response = $this->router->processRequest();
         return json_encode($this->response);
     }
 }

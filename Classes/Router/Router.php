@@ -33,8 +33,8 @@ class Router
     {
         $requestUrl = array_values(explode(DS, $_SERVER['REQUEST_URI']));
         $this->request['authorization'] = isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : 'not defined';
-        $this->request['resource'] = isset($requestUrl[1]) ? strtoupper($requestUrl[1]) : null;
-        $this->request['specific_resource'] = isset($requestUrl[2]) ? strtoupper($requestUrl[2]) : null;
+        $this->request['resource'] = isset($requestUrl[2]) ? strtoupper($requestUrl[2]) : null;
+        $this->request['specific_resource'] = isset($requestUrl[3]) ? strtoupper($requestUrl[3]) : null;
         $this->request['method'] = $_SERVER["REQUEST_METHOD"];
     }
 
