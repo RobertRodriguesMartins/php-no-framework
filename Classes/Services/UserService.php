@@ -38,7 +38,7 @@ class UserService extends UserBase
         $expire_date = Jwt::generateExpirationDate();
         $params = array($refreshToken, $expire_date, $this->idUser);
 
-        $query = "UPDATE user SET user_token = ?, user_token_expire_date = ? WHERE id_user = ?";
+        $query = "UPDATE user SET user_token = ?, user_token_expire = ? WHERE id_user = ?";
 
         $this->response = $this->db->edit($query, $params);
         var_dump($this->response);

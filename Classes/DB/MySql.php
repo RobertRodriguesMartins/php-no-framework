@@ -113,11 +113,8 @@ class MySql
             var_dump($params[$i]);
             $pdoStmt->bindParam($i + 1, $params[$i]);
         }
-        var_dump($pdoStmt);
         $pdoStmt->execute();
-        $pdoStmt->debugDumpParams();
         $updatedRows = $pdoStmt->rowCount();
-        var_dump($updatedRows);
         if ($updatedRows > 0) {
             $this->response['status'] = "SUCCESS";
         }
