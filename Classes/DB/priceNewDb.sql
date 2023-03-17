@@ -5,8 +5,9 @@ USE price_db;
 CREATE TABLE user (
     `id_user` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     `user_email` VARCHAR(255) NOT NULL UNIQUE,
+    `user_password` VARCHAR(255) NOT NULL,
     `user_token` VARCHAR(255) NOT NULL,
-    `user_token_expire_date` DATE NOT NULL 
+    `user_token_expire` DATE NOT NULL 
 );
 
 CREATE TABLE mark (
