@@ -10,30 +10,42 @@ use Interfaces\UserContract;
 
 class UserController extends UserBase
 {
+    public int $requestStatus = 200;
     public function __construct(UserContract $servico)
     {
         $this->service = $servico;
     }
 
-    public function get(): string | array
+    public function clean()
     {
-        $this->response = Payload::processPost(['email', 'password']);
-        $this->email = Hidrate::email($this->response['email']);
-        $this->password = $this->response['password'];
-
-
-        $this->response = $this->service->getOne($this->email, 'email');
-
-        var_dump($this->response);
-        // $this->response = Jwt::verifyToken()
-
-        $this->return = $this->response;
-        return $this->return;
+        //limpa objeto de response
+        $this->response = RESPONSE;
     }
 
-    public function login(array $userData): string | array
+    public function populateUserData($requestToken): void
     {
-        $this->response = $this->service->login($userData);
+        if ($requestToken === 'NO_REQUEST_TOKEN') {
+            $this->response = Payload::processPost(['email', 'password']);
+            $this->userEmail = Hidrate::email($this->response['email']);
+            $this->userPassword = $this->response['password'];
+            $this->response = $this->service->getOne($this->userEmail, 'email');
+        } else {
+            $this->response = $this->service->getOne($requestToken, 'token');
+        }
+
+        if ($this->response['status'] === 'SUCCESS') {
+            $this->userToken = $this->response['data'][0]['user_token'];
+            $this->userEmail = $this->response['data'][0]['user_email'];
+            $this->userTokenExpireDate = $this->response['data'][0]['user_token_expire_date'];
+            $this->idUser = (int) $this->response['data'][0]['id_user'];
+        }
+
+        $this->clean();
+    }
+
+    public function login(): string | array
+    {
+        $this->response = $this->service->login();
 
         $this->return = $this->response;
         return $this->return;

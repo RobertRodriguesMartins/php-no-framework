@@ -62,10 +62,10 @@ class MySql
                 $query = "SELECT * FROM " . $table . " WHERE user_email = ?";
                 break;
             case 'token':
-                $query = "SELECT * FROM " . $table . " WHERE token = ?";
+                $query = "SELECT * FROM " . $table . " WHERE user_token = ?";
                 break;
             case 'name':
-                $query = "SELECT * FROM " . $table . " WHERE name = ?";
+                $query = "SELECT * FROM " . $table . " WHERE user_name = ?";
                 break;
 
             default:

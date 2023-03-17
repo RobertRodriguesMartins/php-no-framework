@@ -2,61 +2,48 @@
 
 namespace Auth;
 
-use Error;
-use Interfaces\UserContract;
+use Controllers\UserController;
+use Interfaces\Abstract\UserBase;
+use Helpers\Jwt;
 
 class Auth
 {
-    //o token do objeto request
     private string $authorization;
-    //serviço do usuário para lidar com o banco
-    private UserContract $userController;
-    //o objeto de resposta do serviço
-    private $response;
-    // o objeto de retorno to Auth para o router
-    private string $return = '';
+    //serviço do usuário com o controle da request e a chamada aos serviços do usuário
+    private UserController $userController;
 
-    public function __construct($rawtoken, UserContract $userS)
+    public function __construct($rawtoken, UserBase $userS)
     {
         $this->userController = $userS;
-        $this->prepareToken($rawtoken);
+        $this->getHidratedToken($rawtoken);
+        if ($this->authorization === 'NO_REQUEST_TOKEN') {
+            $this->prepareUserData();
+        } else {
+            $this->prepareUserData($this->authorization);
+        }
     }
 
-    public function clean()
+    public function getHidratedToken($rawtoken)
     {
-        //limpa objeto de response
-        $this->response = RESPONSE;
+        $this->authorization = Jwt::prepareToken($rawtoken);
     }
 
-    public function prepareToken($rawtoken)
+    public function prepareUserData($requestToken = 'NO_REQUEST_TOKEN')
     {
-        $splitedTokenArray = explode('Bearer ', trim($rawtoken));
-
-        $this->authorization = isset($splitedTokenArray[1]) ? $splitedTokenArray[1] : 'not defined';
+        $this->userController->populateUserData($requestToken);
     }
 
     public function checkUser()
     {
-        $this->response = $this->userController->getOne($this->authorization, 'token');
-        if ($this->response['status'] === 'FAIL') {
-            http_response_code(401);
-            throw new Error('invalid token');
-            $this->clean();
-        } else {
-            $this->checkTokendate();
-            $this->clean();
-        }
-
-        $this->return = $this->authorization;
-        $this->clean();
-        return $this->return;
-    }
-
-    public function checkTokenDate()
-    {
-        if ($this->response['data'][0]['token_expire_date'] === date('Ymd')) {
-            http_response_code(401);
-            throw new Error('refresh your token.');
+        try {
+            Jwt::verifyToken(
+                $this->userController->userEmail,
+                $this->userController->userPassword,
+                $this->userController->userToken
+            );
+            Jwt::checkTokendate($this->userController->userTokenExpireDate);
+        } catch (\Throwable $th) {
+            $this->userController->requestStatus = 400;
         }
     }
 }

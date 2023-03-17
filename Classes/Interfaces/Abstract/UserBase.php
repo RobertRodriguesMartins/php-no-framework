@@ -7,9 +7,12 @@ use Interfaces\UserContract;
 
 abstract class UserBase implements UserContract
 {
-    protected string $email;
-    protected string $password;
-    protected string $token;
+    public string $userEmail;
+    public int $idUser;
+    public string $userPassword;
+    public string $userToken;
+    public string $userTokenExpireDate;
+    public string $userRequestToken;
     //algum serviço que implemente User;
     protected UserBase | MySql $service;
     // objeto de resposta
@@ -23,11 +26,6 @@ abstract class UserBase implements UserContract
     }
 
     public function getOne(string $value, string $case = 'id'): array|string
-    {
-        return [];
-    }
-
-    public function get(): array|string
     {
         return [];
     }

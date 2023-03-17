@@ -31,16 +31,16 @@ class UserService extends UserBase
         return $this->return;
     }
 
-    public function login($userData): string | array
+    public function login(): string | array
     {
 
-        $refreshToken = Jwt::generateToken($userData);
-        $expire_date = Jwt::generateExpirationDate();
-        $params = array($refreshToken, $expire_date, $userData['id']);
+        // $refreshToken = Jwt::generateToken($this->userEmail);
+        // $expire_date = Jwt::generateExpirationDate();
+        // $params = array($refreshToken, $expire_date, $this->idUser);
 
         $query = "UPDATE user SET token = ?, token_expire_date = ? WHERE id = ?";
 
-        $this->response = $this->db->edit($query, $params);
+        // $this->response = $this->db->edit($query, $params);
 
         $this->return = $this->response;
         $this->clean();

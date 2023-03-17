@@ -47,7 +47,6 @@ class Router
     public function processRequest()
     {
         if ($this->request['method'] === 'POST') {
-            // as primeiras duas rotas não verificam o token
             switch ($this->request['resource']) {
                 case 'USERS':
                     // $checkIfUserAlreayExists = $this->userController->getByEmail();
@@ -59,7 +58,8 @@ class Router
                     http_response_code(400);
                     break;
                 case 'LOGIN':
-                    $requestedUser = $this->userController->get();
+                    $this->authMiddleware->checkUser();
+                    $requestedUser = $this->userController->login();
                     $this->response = $requestedUser;
                     break;
                 case 'PRODUCTS':
