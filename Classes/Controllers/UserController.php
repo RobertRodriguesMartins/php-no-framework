@@ -21,7 +21,7 @@ class UserController extends UserBase
         //limpa objeto de response
         $this->response = RESPONSE;
     }
-
+    // temporário
     public function populateUserData($requestToken): void
     {
         if ($requestToken === 'NO_REQUEST_TOKEN') {
@@ -45,7 +45,12 @@ class UserController extends UserBase
 
     public function login(): string | array
     {
-        $this->response = $this->service->login();
+        $this->response = $this->service->login(
+            $this->userEmail,
+            $this->userToken,
+            $this->userTokenExpireDate,
+            $this->idUser
+        );
 
         $this->return = $this->response;
         return $this->return;

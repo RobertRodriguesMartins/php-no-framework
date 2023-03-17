@@ -15,7 +15,7 @@ class Auth
     public function __construct($rawtoken, UserBase $userS)
     {
         $this->userController = $userS;
-        $this->getHidratedToken($rawtoken);
+        $this->setAuthorization($rawtoken);
         if ($this->authorization === 'NO_REQUEST_TOKEN') {
             $this->prepareUserData();
         } else {
@@ -23,7 +23,7 @@ class Auth
         }
     }
 
-    public function getHidratedToken($rawtoken)
+    public function setAuthorization($rawtoken)
     {
         $this->authorization = Jwt::prepareToken($rawtoken);
     }

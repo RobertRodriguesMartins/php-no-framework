@@ -69,7 +69,7 @@ class MySql
                 break;
 
             default:
-                $query = "SELECT * FROM " . $table . " WHERE id = ?";
+                $query = "SELECT * FROM " . $table . " WHERE id_user = ?";
         }
 
         $pdoStmt = $this->conn->prepare($query);
@@ -109,9 +109,15 @@ class MySql
     public function edit($query, $params)
     {
         $pdoStmt = $this->conn->prepare($query);
-        $pdoStmt->execute($params);
+        for ($i = 0; $i < sizeof($params); ++$i) {
+            var_dump($params[$i]);
+            $pdoStmt->bindParam($i + 1, $params[$i]);
+        }
+        var_dump($pdoStmt);
+        $pdoStmt->execute();
+        $pdoStmt->debugDumpParams();
         $updatedRows = $pdoStmt->rowCount();
-
+        var_dump($updatedRows);
         if ($updatedRows > 0) {
             $this->response['status'] = "SUCCESS";
         }
