@@ -60,8 +60,6 @@ class Router
                     break;
                 case 'LOGIN':
                     $requestedUser = $this->userController->get();
-                    var_dump($requestedUser);
-                    exit();
                     $this->response = $requestedUser;
                     break;
                 case 'PRODUCTS':

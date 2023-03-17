@@ -1,6 +1,7 @@
 <?php
 
 require 'bootstrap.php';
+
 // O Router lida com o processo de roteamento da request -> recurso
 use Router\Router;
 use Services\Init;
@@ -23,12 +24,14 @@ class App
         $userController = Init::constructUser();
         //instancia o router e automaticamente prepara o objeto de request
         $this->router = new Router($userController);
+        //inicia o processo de roteamento
         $this->return = $this->start();
     }
 
     public function start()
     {
         $this->response = $this->router->processRequest();
+        //retorna um json
         return json_encode($this->response);
     }
 }

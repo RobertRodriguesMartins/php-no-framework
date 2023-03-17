@@ -4,7 +4,7 @@ require './Classes/ErrorHandler/ErrorHandler.php';
 
 // Conexão com o banco
 define('HOST', '127.0.0.1');
-define('NAME', 'php_db');
+define('NAME', 'price_db');
 define('PORT', 3306);
 define('USER', 'root');
 define('PASSWORD', 'password');

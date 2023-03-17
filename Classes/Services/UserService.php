@@ -24,7 +24,7 @@ class UserService extends UserBase
     public function getOne(string $value, string $case = 'id'): string | array
     {
 
-        $this->response = $this->db->getOne('users', $value, $case);
+        $this->response = $this->db->getOne('user', $value, $case);
 
         $this->return = $this->response;
         $this->clean();
@@ -38,7 +38,7 @@ class UserService extends UserBase
         $expire_date = Jwt::generateExpirationDate();
         $params = array($refreshToken, $expire_date, $userData['id']);
 
-        $query = "UPDATE users SET token = ?, token_expire_date = ? WHERE id = ?";
+        $query = "UPDATE user SET token = ?, token_expire_date = ? WHERE id = ?";
 
         $this->response = $this->db->edit($query, $params);
 

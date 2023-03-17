@@ -2,6 +2,9 @@
 
 namespace Controllers;
 
+use Helpers\Hidrate;
+use Helpers\Jwt;
+use Helpers\Payload;
 use Interfaces\Abstract\UserBase;
 use Interfaces\UserContract;
 
@@ -14,9 +17,15 @@ class UserController extends UserBase
 
     public function get(): string | array
     {
-        $value = 'amdkadm';
-        $case = 'email';
-        $this->response = $this->service->getOne($value, $case);
+        $this->response = Payload::processPost(['email', 'password']);
+        $this->email = Hidrate::email($this->response['email']);
+        $this->password = $this->response['password'];
+
+
+        $this->response = $this->service->getOne($this->email, 'email');
+
+        var_dump($this->response);
+        // $this->response = Jwt::verifyToken()
 
         $this->return = $this->response;
         return $this->return;

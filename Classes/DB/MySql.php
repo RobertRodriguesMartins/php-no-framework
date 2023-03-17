@@ -59,7 +59,7 @@ class MySql
     {
         switch ($case) {
             case 'email':
-                $query = "SELECT * FROM " . $table . " WHERE email = ?";
+                $query = "SELECT * FROM " . $table . " WHERE user_email = ?";
                 break;
             case 'token':
                 $query = "SELECT * FROM " . $table . " WHERE token = ?";

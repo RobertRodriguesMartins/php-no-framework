@@ -7,6 +7,9 @@ use Interfaces\UserContract;
 
 abstract class UserBase implements UserContract
 {
+    protected string $email;
+    protected string $password;
+    protected string $token;
     //algum serviço que implemente User;
     protected UserBase | MySql $service;
     // objeto de resposta

@@ -3,6 +3,7 @@
 function customErrorHandler($errnum = 'numero', $errstr = 'erro desconhecido', $errfile = 'arquivo?', $errline = 'linha')
 {
     // echo "o erro $errstr: foi encontrado em $errfile na linha $errline. codigo: $errnum";
+    var_dump($errnum, $errstr, $errfile, $errline);
     $statusCode = http_response_code();
 
     if ($statusCode === 200) {
