@@ -7,12 +7,14 @@ use Interfaces\UserContract;
 
 abstract class UserBase implements UserContract
 {
-    public string $userEmail = '';
-    public int $idUser = 0;
-    public string $userPassword = '';
-    public string $userToken = '';
-    public string $userTokenExpireDate = '';
-    public string $userRequestToken = '';
+    public string $user_request_email = '';
+    public string $user_email = '';
+    public int $id_user = 0;
+    public string $user_request_password = '';
+    public string $user_password = '';
+    public string $user_token = '';
+    public string $user_token_expire = '';
+    public string $user_request_token = '';
     //algum serviço que implemente User;
     protected UserBase | MySql $service;
     // objeto de resposta

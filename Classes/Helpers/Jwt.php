@@ -6,21 +6,19 @@ use Exception;
 
 class Jwt
 {
-    public static function verifyToken($userEmail, $userPassword, string $userToken)
+    public static function verifyToken($id_user, $user_email, $user_request_password, $user_password)
     {
-        $tokenIsValid = sha1($userEmail .
-            $userPassword . PRIVATE_KEY);
+        $tokenIsValid = strcmp(self::generateToken($id_user, $user_email, $user_request_password),  $user_password);
 
-        if (!$tokenIsValid) {
+        if (!!$tokenIsValid) {
             throw new Exception('invalid password');
         }
     }
 
-    public static function generateToken($user_email, $user_password, $id_user)
+    public static function generateToken($id_user, $user_email, $user_password, $salt = null)
     {
-        var_dump($user_email, $user_password, $id_user, PRIVATE_KEY);
         return  sha1($id_user . $user_email .
-            $user_password . PRIVATE_KEY);
+            $user_password . PRIVATE_KEY . $salt);
     }
 
     public static function generateExpirationDate($days = 1)

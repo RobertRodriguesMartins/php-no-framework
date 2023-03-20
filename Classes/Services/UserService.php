@@ -33,9 +33,9 @@ class UserService extends UserBase
 
     public function login(): string | array
     {
-        $this->model->userToken = Jwt::generateToken($this->userEmail, $this->userPassword, $this->idUser);
-        $this->model->userTokenExpireDate = Jwt::generateExpirationDate();
-        $this->model->idUser = $this->idUser;
+        $this->model->user_token = Jwt::generateToken($this->user_email, $this->user_request_password, $this->id_user, time());
+        $this->model->user_token_expire = Jwt::generateExpirationDate();
+        $this->model->id_user = $this->id_user;
 
         $this->response = $this->model->login();
 

@@ -24,23 +24,25 @@ class UserController extends UserBase
     {
         if ($requestToken === 'NO_REQUEST_TOKEN') {
             $this->response = Payload::processPost(['email', 'password']);
-            $this->userEmail = Hidrate::email($this->response['email']);
-            $this->userPassword = $this->response['password'];
-            $this->response = $this->service->getOne($this->userEmail, 'email');
+            $this->user_request_email = Hidrate::email($this->response['email']);
+            $this->user_request_password = $this->response['password'];
+            $this->response = $this->service->getOne($this->user_request_email, 'email');
         } else {
             $this->response = $this->service->getOne($requestToken, 'token');
         }
 
         if ($this->response['status'] === 'SUCCESS') {
-            $this->userToken = $this->response['data'][0]['user_token'];
-            $this->userEmail = $this->response['data'][0]['user_email'];
-            $this->userTokenExpireDate = $this->response['data'][0]['user_token_expire'];
-            $this->idUser = (int) $this->response['data'][0]['id_user'];
-            $this->service->userEmail = $this->userEmail;
-            $this->service->userPassword = $this->userPassword;
-            $this->service->userToken = $this->userToken;
-            $this->service->userTokenExpireDate = $this->userTokenExpireDate;
-            $this->service->idUser = $this->idUser;
+            $this->user_token = $this->response['data'][0]['user_token'];
+            $this->user_email = $this->response['data'][0]['user_email'];
+            $this->user_token_expire = $this->response['data'][0]['user_token_expire'];
+            $this->id_user = (int) $this->response['data'][0]['id_user'];
+            $this->user_password = $this->response['data'][0]['user_password'];
+            $this->service->user_email = $this->user_email;
+            $this->service->user_password = $this->user_password;
+            $this->service->user_request_password = $this->user_request_password;
+            $this->service->user_token = $this->user_token;
+            $this->service->user_token_expire = $this->user_token_expire;
+            $this->service->id_user = $this->id_user;
         }
 
         $this->clean();

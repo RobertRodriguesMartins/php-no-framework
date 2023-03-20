@@ -24,7 +24,7 @@ class UserModel extends UserBase
     {
         $query = "UPDATE user SET user_token = ?, user_token_expire = ? WHERE id_user = ?";
 
-        $this->response = $this->db->edit($query, array($this->userToken, $this->userTokenExpireDate, $this->idUser));
+        $this->response = $this->db->edit($query, array($this->user_token, $this->user_token_expire, $this->id_user));
 
         $this->return = $this->response;
         return $this->return;
