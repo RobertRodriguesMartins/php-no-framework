@@ -44,6 +44,14 @@ CREATE TABLE product (
     FOREIGN KEY (category_id) REFERENCES category(id_category)
 );
 
+CREATE TABLE spec (
+    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `product_id` INT NOT NULL,
+    `spec_name` VARCHAR(255) NOT NULL,
+    `spec_value` VARCHAR(255) NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES product(id_product)
+);
+
 CREATE TABLE offer (
     `id_offer` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     `offer_price` FLOAT NOT NULL,
