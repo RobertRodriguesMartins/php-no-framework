@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use Helpers\Payload;
 use Interfaces\Abstract\ProductBase;
 
 class ProductController extends ProductBase
@@ -38,7 +39,19 @@ class ProductController extends ProductBase
 
     public function create(): string | array
     {
-        $this->response = $this->service->create();
+        $this->response = Payload::processPost([
+            "product_name",
+            "product_status",
+            "mark_id",
+            "store_id",
+            "category_id"
+        ]);
+
+        $this->service->product_name = $this->response['product_name'];
+        $this->service->product_status = (int) $this->response['product_status'];
+        $this->service->mark_id = (int) $this->response['mark_id'];
+        $this->service->store_id = (int) $this->response['store_id'];
+        $this->service->category_id = (int) $this->response['category_id'];
 
         $this->return = $this->response;
         $this->clean();
