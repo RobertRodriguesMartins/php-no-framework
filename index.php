@@ -4,7 +4,7 @@ require 'bootstrap.php';
 
 // O Router lida com o processo de roteamento da request -> recurso
 use Router\Router;
-use Services\Init;
+use Helpers\Init;
 
 class App
 {

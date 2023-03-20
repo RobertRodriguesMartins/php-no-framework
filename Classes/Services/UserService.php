@@ -8,11 +8,11 @@ use Interfaces\Abstract\UserBase;
 
 class UserService extends UserBase
 {
-    private Mysql $db;
+    private UserBase $model;
 
-    public function __construct(Mysql $service)
+    public function __construct(UserBase $model)
     {
-        $this->db = $service;
+        $this->model = $model;
     }
 
     public function clean()
@@ -24,7 +24,7 @@ class UserService extends UserBase
     public function getOne(string $value, string $case = 'id'): string | array
     {
 
-        $this->response = $this->db->getOne('user', $value, $case);
+        $this->response = $this->model->getOne($value, $case);
 
         $this->return = $this->response;
         $this->clean();
@@ -33,16 +33,12 @@ class UserService extends UserBase
 
     public function login(): string | array
     {
-        var_dump($this->userEmail, $this->userPassword);
-        $refreshToken = Jwt::generateToken($this->userEmail, $this->userPassword);
-        $expire_date = Jwt::generateExpirationDate();
-        $params = array($refreshToken, $expire_date, $this->idUser);
+        $this->model->userToken = Jwt::generateToken($this->userEmail, $this->userPassword, $this->idUser);
+        $this->model->userTokenExpireDate = Jwt::generateExpirationDate();
+        $this->model->idUser = $this->idUser;
 
-        $query = "UPDATE user SET user_token = ?, user_token_expire = ? WHERE id_user = ?";
+        $this->response = $this->model->login();
 
-        $this->response = $this->db->edit($query, $params);
-        var_dump($this->response);
-        exit();
         $this->return = $this->response;
         $this->clean();
         return $this->return;

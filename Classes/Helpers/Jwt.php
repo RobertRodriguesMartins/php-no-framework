@@ -8,18 +8,19 @@ class Jwt
 {
     public static function verifyToken($userEmail, $userPassword, string $userToken)
     {
-        $tokenIsValid = password_verify(sha1($userEmail .
-            $userPassword . PRIVATE_KEY), $userToken);
+        $tokenIsValid = sha1($userEmail .
+            $userPassword . PRIVATE_KEY);
 
         if (!$tokenIsValid) {
             throw new Exception('invalid password');
         }
     }
 
-    public static function generateToken($userEmail, $userPassword)
+    public static function generateToken($user_email, $user_password, $id_user)
     {
-        return  password_hash(sha1($userEmail .
-            $userPassword . PRIVATE_KEY), PASSWORD_BCRYPT);
+        var_dump($user_email, $user_password, $id_user, PRIVATE_KEY);
+        return  sha1($id_user . $user_email .
+            $user_password . PRIVATE_KEY);
     }
 
     public static function generateExpirationDate($days = 1)

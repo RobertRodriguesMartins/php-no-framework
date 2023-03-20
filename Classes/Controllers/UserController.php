@@ -3,15 +3,13 @@
 namespace Controllers;
 
 use Helpers\Hidrate;
-use Helpers\Jwt;
 use Helpers\Payload;
 use Interfaces\Abstract\UserBase;
-use Interfaces\UserContract;
 
 class UserController extends UserBase
 {
     public int $requestStatus = 200;
-    public function __construct(UserContract $servico)
+    public function __construct(UserBase $servico)
     {
         $this->service = $servico;
     }
@@ -36,8 +34,13 @@ class UserController extends UserBase
         if ($this->response['status'] === 'SUCCESS') {
             $this->userToken = $this->response['data'][0]['user_token'];
             $this->userEmail = $this->response['data'][0]['user_email'];
-            $this->userTokenExpireDate = $this->response['data'][0]['user_token_expire_date'];
+            $this->userTokenExpireDate = $this->response['data'][0]['user_token_expire'];
             $this->idUser = (int) $this->response['data'][0]['id_user'];
+            $this->service->userEmail = $this->userEmail;
+            $this->service->userPassword = $this->userPassword;
+            $this->service->userToken = $this->userToken;
+            $this->service->userTokenExpireDate = $this->userTokenExpireDate;
+            $this->service->idUser = $this->idUser;
         }
 
         $this->clean();
@@ -45,12 +48,7 @@ class UserController extends UserBase
 
     public function login(): string | array
     {
-        $this->response = $this->service->login(
-            $this->userEmail,
-            $this->userToken,
-            $this->userTokenExpireDate,
-            $this->idUser
-        );
+        $this->response = $this->service->login();
 
         $this->return = $this->response;
         return $this->return;

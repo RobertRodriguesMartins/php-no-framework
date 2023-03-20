@@ -110,11 +110,12 @@ class MySql
     {
         $pdoStmt = $this->conn->prepare($query);
         for ($i = 0; $i < sizeof($params); ++$i) {
-            var_dump($params[$i]);
             $pdoStmt->bindParam($i + 1, $params[$i]);
         }
         $pdoStmt->execute();
         $updatedRows = $pdoStmt->rowCount();
+
+        var_dump($updatedRows);
         if ($updatedRows > 0) {
             $this->response['status'] = "SUCCESS";
         }
