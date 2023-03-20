@@ -2,13 +2,10 @@
 
 namespace Controllers;
 
-use Helpers\Hidrate;
-use Helpers\Payload;
 use Interfaces\Abstract\ProductBase;
 
 class ProductController extends ProductBase
 {
-    public int $requestStatus = 200;
     public function __construct(ProductBase $servico)
     {
         $this->service = $servico;

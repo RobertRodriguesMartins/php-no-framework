@@ -3,6 +3,8 @@
 require 'bootstrap.php';
 
 // O Router lida com o processo de roteamento da request -> recurso
+
+use DB\MySql;
 use Router\Router;
 use Helpers\Init;
 
@@ -20,10 +22,14 @@ class App
     {
         //define um valor padrão para o objeto de response
         $this->response = RESPONSE;
+        //inicializa o banco de dados
+        Init::setDb(new MySql());
         //inicializa os serviços de user
         $userController = Init::constructUser();
+        //inicializa os serviços de product
+        $productController = Init::constructProduct();
         //instancia o router e automaticamente prepara o objeto de request
-        $this->router = new Router($userController);
+        $this->router = new Router($userController, $productController);
         //inicia o processo de roteamento
         $this->return = $this->start();
     }

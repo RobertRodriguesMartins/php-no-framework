@@ -19,7 +19,7 @@ class UserController extends UserBase
         //limpa objeto de response
         $this->response = RESPONSE;
     }
-    // temporário
+
     public function populateUserData($requestToken): void
     {
         if ($requestToken === 'NO_REQUEST_TOKEN') {

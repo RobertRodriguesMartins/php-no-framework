@@ -3,8 +3,9 @@
 namespace Router;
 
 use Exception;
-use Services\Product;
 use Auth\Auth;
+use Controllers\ProductController;
+use Interfaces\ProductContract;
 use Interfaces\UserContract;
 
 class Router
@@ -19,13 +20,13 @@ class Router
     private Auth $authMiddleware;
     // o router ira se encarregar de chamar os controllers
     private UserContract $userController;
-    private Product $productController;
+    private ProductContract $productController;
 
-    public function __construct(UserContract $userController)
+    public function __construct(UserContract $userController, ProductContract $productController)
     {
         $this->processUrl();
         $this->userController = $userController;
-        $this->productController = new Product();
+        $this->productController = $productController;
         $this->authMiddleware = new Auth($this->request['authorization'], $this->userController);
     }
 
@@ -48,15 +49,6 @@ class Router
     {
         if ($this->request['method'] === 'POST') {
             switch ($this->request['resource']) {
-                case 'USERS':
-                    // $checkIfUserAlreayExists = $this->userController->getByEmail();
-                    // if ($checkIfUserAlreayExists['status'] === 'FAIL') {
-                    //     $this->response = $this->userController->create();
-                    //     break;
-                    // }
-
-                    http_response_code(400);
-                    break;
                 case 'LOGIN':
                     $this->authMiddleware->checkUser();
                     $requestedUser = $this->userController->login();
@@ -101,42 +93,6 @@ class Router
                 default:
                     throw new Exception('invalid route');
             }
-        } elseif ($this->request['method'] === 'DELETE') {
-            // verificar se o usuário está logado
-            $this->request['authorization'] = $this->authMiddleware->checkUser();
-
-            switch ($this->request['resource']) {
-                case 'PRODUCTS':
-                    $specific_resource = $this->request['specific_resource'];
-                    if ($specific_resource) {
-                        $this->response =  $this->productController->remove($specific_resource);
-                        if ($this->response['status'] === 'FAIL') {
-                            http_response_code(400);
-                        }
-                        break;
-                    } else {
-                        throw new Exception('id not specified!');
-                        break;
-                    }
-                case 'USERS':
-                    $specific_resource = $this->request['specific_resource'];
-                    if ($specific_resource) {
-                        // $this->response =  $this->userController->remove($specific_resource);
-                        if ($this->response['status'] === 'FAIL') {
-                            http_response_code(400);
-                        }
-                        break;
-                    } else {
-                        throw new Exception('id not specified!');
-                        http_response_code(400);
-                        break;
-                    }
-                case 'ME':
-                    // $this->response =  $this->userController->remove($this->request['authorization'], 'token');
-                    break;
-                default:
-                    throw new Exception('invalid route');
-            }
         } else {
             // verificar se o usuário está logado
             $this->authMiddleware->checkUser();
@@ -151,7 +107,7 @@ class Router
                         break;
                     }
 
-                    $this->response = $this->productController->edit($product['data'][0]);
+                    // $this->response = $this->productController->edit($product['data'][0]);
                     if ($this->response['status'] === 'FAIL') {
                         http_response_code(400);
                     }
