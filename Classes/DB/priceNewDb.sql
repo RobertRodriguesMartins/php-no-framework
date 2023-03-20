@@ -35,7 +35,7 @@ CREATE TABLE seller (
 CREATE TABLE product (
     `id_product` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     `product_name` VARCHAR(255) NOT NULL UNIQUE,
-    `product_status` TINYINT NOT NULL,
+    `product_status` VARCHAR(255) NOT NULL,
     `mark_id` INT NOT NULL,
     `store_id` INT NOT NULL,
     `category_id` INT NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE product (
 );
 
 CREATE TABLE spec (
-    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `id_spec` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     `product_id` INT NOT NULL,
     `spec_name` VARCHAR(255) NOT NULL,
     `spec_value` VARCHAR(255) NOT NULL,
