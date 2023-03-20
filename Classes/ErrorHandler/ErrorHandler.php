@@ -4,10 +4,9 @@ function customErrorHandler($errnum = 'numero', $errstr = 'erro desconhecido', $
 {
     // echo "o erro $errstr: foi encontrado em $errfile na linha $errline. codigo: $errnum";
     var_dump($errnum, $errstr, $errfile, $errline);
-    $statusCode = http_response_code();
 
-    if ($statusCode === 200) {
-        http_response_code(400);
+    if (isset($_SERVER['status_code'])) {
+        http_response_code($_SERVER['status_code']);
     }
 
     echo json_encode(RESPONSE);

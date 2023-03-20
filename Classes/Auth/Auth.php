@@ -5,6 +5,7 @@ namespace Auth;
 use Controllers\UserController;
 use Interfaces\Abstract\UserBase;
 use Helpers\Jwt;
+use Exception;
 
 class Auth
 {
@@ -44,7 +45,8 @@ class Auth
             );
             Jwt::checkTokendate($this->userController->user_token_expire);
         } catch (\Throwable $th) {
-            $this->userController->requestStatus = 400;
+            $_SERVER['status_code'] = 401;
+            throw new Exception($th->getMessage());
         }
     }
 }

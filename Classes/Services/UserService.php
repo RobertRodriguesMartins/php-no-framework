@@ -39,6 +39,15 @@ class UserService extends UserBase
 
         $this->response = $this->model->login();
 
+        if ($this->response['status'] === 'SUCCESS') {
+            $this->response['data'] = [array_merge($this->response['data'], array(
+                'id_user' => $this->id_user,
+                'user_email' => $this->user_email,
+            ))];
+
+            $this->response['user_token'] = $this->model->user_token;
+        }
+
         $this->return = $this->response;
         $this->clean();
         return $this->return;

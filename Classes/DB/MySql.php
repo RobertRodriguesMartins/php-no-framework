@@ -115,7 +115,6 @@ class MySql
         $pdoStmt->execute();
         $updatedRows = $pdoStmt->rowCount();
 
-        var_dump($updatedRows);
         if ($updatedRows > 0) {
             $this->response['status'] = "SUCCESS";
         }
