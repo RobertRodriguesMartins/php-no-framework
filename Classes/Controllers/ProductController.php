@@ -16,7 +16,6 @@ class ProductController extends ProductBase
         //limpa objeto de response
         $this->response = RESPONSE;
     }
-    // temporário
 
     public function getOne(): array|string
     {
