@@ -28,7 +28,8 @@ class UserController extends UserBase
             $this->user_request_password = $this->response['password'];
             $this->response = $this->service->getOne($this->user_request_email, 'email');
         } else {
-            $this->response = $this->service->getOne($requestToken, 'token');
+            $this->user_request_password = $requestToken;
+            $this->response = $this->service->getOne($this->user_request_password, 'token');
         }
 
         if ($this->response['status'] === 'SUCCESS') {

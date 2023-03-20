@@ -6,12 +6,12 @@ use Exception;
 
 class Jwt
 {
-    public static function verifyToken($id_user, $user_email, $user_request_password, $user_password)
+    public static function verifyToken($user_request_password, $user_token)
     {
-        $tokenIsValid = strcmp(self::generateToken($id_user, $user_email, $user_request_password),  $user_password);
+        $tokenIsValid = strcmp($user_request_password, $user_token);
 
         if (!!$tokenIsValid) {
-            throw new Exception('invalid password');
+            throw new Exception('invalid token');
         }
     }
 

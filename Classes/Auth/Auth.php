@@ -38,10 +38,8 @@ class Auth
     {
         try {
             Jwt::verifyToken(
-                $this->userController->id_user,
-                $this->userController->user_email,
                 $this->userController->user_request_password,
-                $this->userController->user_password,
+                $this->userController->user_token
             );
             Jwt::checkTokendate($this->userController->user_token_expire);
         } catch (\Throwable $th) {
